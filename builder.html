@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KeyForge | Builder</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="builder-page">
+    <nav>
+        <div class="nav-left">
+            <a href="index.html" class="logo-link">
+                <div class="logo">KEY<span>FORGE</span></div>
+            </a>
+            <div class="nav-links">
+                <a href="builder.html" class="nav-build-link">Build</a>
+                <a href="#">Orders</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="nav-links">
+                <a href="about.html">About</a>
+                <a href="#">Support</a>
+                <a href="account.html" id="account-link">Login</a>
+            </div>
+            <div class="nav-separator"></div>
+            <button id="theme-toggle" aria-label="Toggle Dark Mode">
+                <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+            </button>
+        </div>
+    </nav>
+
+    <main class="builder-container">
+        <section class="specs-display">
+            <div class="specs-content">
+                <span class="label">The Configuration</span>
+                <h2 id="display-case">Select a Case</h2>
+                <div class="specs-list">
+                    <p><span>Switch:</span> <strong id="display-switch">None</strong></p>
+                    <p><span>Caps:</span> <strong id="display-keycaps">None</strong></p>
+                    <p><span>Mods:</span> <strong id="display-mods">None</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="controls">
+            <div class="accordion">
+                <div class="step active" data-step="1">
+                    <button class="step-header">01. Choose Case</button>
+                    <div class="step-content">
+                        <div class="option" onclick="updateBuild('case', 'Aluminum Forge - Brass', 199)">
+                            <div class="opt-info"><strong>Aluminum Brass</strong><small>Heavy, premium sound</small></div>
+                            <span class="price">$199</span>
+                        </div>
+                        <div class="option" onclick="updateBuild('case', 'Polycarbonate - Clear', 150)">
+                            <div class="opt-info"><strong>Polycarbonate</strong><small>Lightweight, RGB friendly</small></div>
+                            <span class="price">$150</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="step" data-step="2">
+                    <button class="step-header">02. Select Switches</button>
+                    <div class="step-content">
+                        <div class="option" onclick="updateBuild('switch', 'Linear (Custom Lubed)', 60)">
+                            <div class="opt-info"><strong>Linear Lubed</strong><small>Smooth, buttery</small></div>
+                            <span class="price">$60</span>
+                        </div>
+                        <div class="option" onclick="updateBuild('switch', 'Tactile (Holy Panda)', 85)">
+                            <div class="opt-info"><strong>Tactile Panda</strong><small>Satisfying snap</small></div>
+                            <span class="price">$85</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="step" data-step="3">
+                    <button class="step-header">03. Keycaps</button>
+                    <div class="step-content">
+                        <div class="option" onclick="updateBuild('keycaps', 'Olive & Cream Cherry', 120)">
+                            <div class="opt-info"><strong>Olive & Cream</strong><small>Thick PBT tones</small></div>
+                            <span class="price">$120</span>
+                        </div>
+                        <div class="option" onclick="updateBuild('keycaps', 'Minimalist White', 80)">
+                            <div class="opt-info"><strong>Minimal White</strong><small>Clean, timeless</small></div>
+                            <span class="price">$80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="step" data-step="4">
+                    <button class="step-header">04. Extra Mods</button>
+                    <div class="step-content">
+                        <div class="option" onclick="updateBuild('mods', 'None', 0)">
+                            <div class="opt-info"><strong>None</strong><small>Standard factory build</small></div>
+                            <span class="price">+$0</span>
+                        </div>
+                        <div class="option" onclick="updateBuild('mods', 'Films & Tuned Stabs', 40)">
+                            <div class="opt-info"><strong>Tuned Internals</strong><small>Zero rattle</small></div>
+                            <span class="price">+$40</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="builder-footer">
+                <div class="price-row">
+                    <span>Subtotal</span>
+                    <span class="amount">$<span id="total-price">0</span></span>
+                </div>
+                <div class="footer-actions">
+                    <button class="cta-button" id="checkout-btn" onclick="showCheckout()" disabled>Complete Vision</button>
+                    <button class="clear-btn" onclick="clearBuild()">Clear</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="checkout-overlay" class="overlay">
+        <div class="checkout-modal">
+            <div class="modal-header">
+                <h3>Final Forge Receipt</h3>
+                <button class="close-btn" onclick="closeCheckout()">&times;</button>
+            </div>
+            <div class="receipt-body">
+                <div class="receipt-line"><span>Case</span><strong id="sum-case">-</strong></div>
+                <div class="receipt-line"><span>Switches</span><strong id="sum-switch">-</strong></div>
+                <div class="receipt-line"><span>Keycaps</span><strong id="sum-keycaps">-</strong></div>
+                <div class="receipt-line"><span>Assembly</span><strong id="sum-mods">-</strong></div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-line total-line"><span>Total</span><strong>$<span id="final-price">0</span></strong></div>
+            </div>
+            <button class="cta-button full-width" onclick="placeOrder()">Place Order</button>
+        </div>
+    </div>
+
+    <div id="clear-overlay" class="overlay">
+        <div class="checkout-modal">
+            <div class="modal-header">
+                <h3>Reset Vision?</h3>
+            </div>
+            <div class="receipt-body">
+                <p style="opacity: 0.7; margin-bottom: 2rem;">This will wipe your current configuration and start the forge from scratch.</p>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button class="cta-button" onclick="confirmClear()" style="flex: 1; background-color: var(--color-accent);">Yes, Reset</button>
+                <button class="clear-btn" onclick="closeClearModal()" style="flex: 1;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="success-overlay" class="overlay">
+        <div class="checkout-modal" style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🔨</div>
+            <h3>Forging Started</h3>
+            <p style="opacity: 0.7; margin: 1rem 0 2rem;">Your custom keyboard has been added to the queue. Check your email for build updates.</p>
+            <button class="cta-button full-width" onclick="finalizeOrder()">Return Home</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
