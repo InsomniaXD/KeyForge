@@ -78,14 +78,8 @@ nav {
 }
 
 /* THEME BUTTON */
-#theme-toggle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid rgba(128, 128, 128, 0.2);
-  background: transparent;
-  cursor: pointer;
-}
+#theme-toggle { display: flex; align-items: center; justify-content: center; cursor: pointer; background: transparent; color: var(--color-secondary); border: 1px solid rgba(128,128,128,0.2); border-radius: 50%; width: 40px; height: 40px; transition: var(--transition); }
+#theme-toggle:hover { border-color: var(--color-tertiary); transform: rotate(15deg); }
 
 /* BUTTON */
 .cta-button {
