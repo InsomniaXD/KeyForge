@@ -1,13 +1,21 @@
-/* ================= BUILDER ONLY ================= */
+/* =========================
+   BUILDER LAYOUT
+========================= */
 
 .builder-page {
-  display: grid;
-  grid-template-columns: 320px 1fr 320px;
   min-height: calc(100vh - 82px);
 }
 
-/* LEFT */
+/* =========================
+   LEFT SIDEBAR
+========================= */
+
 .builder-sidebar {
+  position: fixed;
+  top: 82px;
+  left: 0;
+  width: 320px;
+  height: calc(100vh - 82px);
   padding: 3rem 2rem;
   border-right: 1px solid rgba(128, 128, 128, 0.1);
 }
@@ -22,7 +30,10 @@
   margin-top: 1rem;
 }
 
-/* PROGRESS */
+/* =========================
+   PROGRESS
+========================= */
+
 .progress {
   margin-top: 2rem;
   display: flex;
@@ -45,27 +56,53 @@
   background: rgba(10, 92, 19, 0.05);
 }
 
-/* MAIN */
+/* =========================
+   MAIN CONTENT (CENTER)
+========================= */
+
 .builder-main {
+  margin-left: 320px;
+  margin-right: 320px;
   padding: 3rem;
 }
 
+/* =========================
+   STEP VISIBILITY
+========================= */
+
 .step {
   display: none;
+  padding-top: 120px;
 }
 
 .step.active {
   display: block;
 }
 
-/* GRID */
+/* =========================
+   STEP BUTTONS
+========================= */
+
+.step-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+/* =========================
+   PRODUCT GRID
+========================= */
+
 .option-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 }
 
-/* CARDS */
+/* =========================
+   PRODUCT CARDS
+========================= */
+
 .option-card {
   padding: 1.2rem;
   border: 1px solid rgba(128, 128, 128, 0.2);
@@ -85,7 +122,10 @@
   background: rgba(10, 92, 19, 0.06);
 }
 
-/* IMAGES */
+/* =========================
+   PRODUCT IMAGES
+========================= */
+
 .option-card img {
   width: 100%;
   height: 140px;
@@ -94,11 +134,24 @@
   margin-bottom: 10px;
 }
 
-/* SUMMARY */
+/* =========================
+   RIGHT SUMMARY PANEL
+========================= */
+
 .summary-panel {
+  position: fixed;
+  top: 82px;
+  right: 0;
+  width: 320px;
+  height: calc(100vh - 82px);
   padding: 3rem 2rem;
   border-left: 1px solid rgba(128, 128, 128, 0.1);
+  overflow: hidden;
 }
+
+/* =========================
+   SUMMARY CONTENT
+========================= */
 
 .summary-row {
   display: flex;
@@ -110,4 +163,35 @@
 .summary-row span:last-child {
   color: var(--color-tertiary);
   font-weight: 700;
+}
+
+/* =========================
+   STEP HEADER (FIXED LAYOUT BAR)
+========================= */
+
+.step-header {
+  position: fixed;
+  top: 82px;
+  left: 320px;
+  right: 320px;
+
+  z-index: 1000;
+
+  display: grid;
+
+  grid-template-columns: 1fr auto auto;
+  grid-template-rows: auto auto;
+
+  grid-template-areas:
+    "title back next"
+    "content content content";
+
+  align-items: center;
+  gap: 0.5rem 1rem;
+
+  padding: 1.5rem 2rem;
+
+  background: var(--color-primary);
+
+  border-bottom: 1px solid rgba(128, 128, 128, 0.08);
 }
