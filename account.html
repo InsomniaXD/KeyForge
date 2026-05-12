@@ -153,7 +153,8 @@
         document.getElementById("show-signup").onclick = () => { loginSection.style.display="none"; signupSection.style.display="block"; };
         document.getElementById("show-login").onclick = () => { signupSection.style.display="none"; loginSection.style.display="block"; };
 
-        document.getElementById("signup-form").onsubmit = (e) => {
+        // DATABASE: SIGNUP
+        document.getElementById("signup-form").onsubmit = async (e) => {
             e.preventDefault();
             const user = {
                 name: document.getElementById("signup-name").value,
@@ -163,40 +164,65 @@
                 gender: document.getElementById("signup-gender").value,
                 password: document.getElementById("signup-password").value
             };
-            localStorage.setItem("kf_user_data", JSON.stringify(user));
-            alert("Account created!");
-            location.reload();
+
+            try {
+                const res = await fetch('/api/users/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(user)
+                });
+                if (res.ok) {
+                    alert("Account created in database!");
+                    location.reload();
+                } else { alert("Registration failed."); }
+            } catch (err) { alert("Server error."); }
         };
 
-        document.getElementById("login-form").onsubmit = (e) => {
+        // DATABASE: LOGIN
+        document.getElementById("login-form").onsubmit = async (e) => {
             e.preventDefault();
-            const storedUser = JSON.parse(localStorage.getItem("kf_user_data"));
-            if (storedUser && document.getElementById("login-email").value === storedUser.email && document.getElementById("login-password").value === storedUser.password) {
-                localStorage.setItem("loggedInUser", storedUser.email);
-                showAccount(storedUser);
-            } else { alert("Invalid credentials."); }
+            const creds = {
+                email: document.getElementById("login-email").value,
+                password: document.getElementById("login-password").value
+            };
+
+            try {
+                const res = await fetch('/api/users/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(creds)
+                });
+                if (res.ok) {
+                    const userData = await res.json();
+                    localStorage.setItem("loggedInUser", userData.email);
+                    localStorage.setItem("kf_user_data", JSON.stringify(userData));
+                    showAccount(userData);
+                } else { alert("Invalid credentials."); }
+            } catch (err) { alert("Could not connect to database."); }
         };
 
-        // SAVE PROFILE CHANGES
-        document.getElementById("edit-profile-form").onsubmit = (e) => {
+        // DATABASE: UPDATE PROFILE
+        document.getElementById("edit-profile-form").onsubmit = async (e) => {
             e.preventDefault();
-            let user = JSON.parse(localStorage.getItem("kf_user_data"));
-            user.name = document.getElementById("edit-name").value;
-            user.username = document.getElementById("edit-username").value;
-            user.address = document.getElementById("edit-address").value;
-            localStorage.setItem("kf_user_data", JSON.stringify(user));
-            alert("Details updated!");
-            showAccount(user);
-        };
+            const updated = {
+                email: localStorage.getItem("loggedInUser"),
+                name: document.getElementById("edit-name").value,
+                username: document.getElementById("edit-username").value,
+                address: document.getElementById("edit-address").value
+            };
 
-        // CHANGE PASSWORD
-        document.getElementById("change-pass-form").onsubmit = (e) => {
-            e.preventDefault();
-            let user = JSON.parse(localStorage.getItem("kf_user_data"));
-            user.password = document.getElementById("new-password").value;
-            localStorage.setItem("kf_user_data", JSON.stringify(user));
-            alert("Password updated successfully!");
-            document.getElementById("new-password").value = "";
+            try {
+                const res = await fetch('/api/users/update', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updated)
+                });
+                if (res.ok) {
+                    localStorage.setItem("kf_user_data", JSON.stringify(updated));
+                    alert("Profile updated in database!");
+                    showAccount(updated);
+                }
+            } catch (err) { alert("Update failed."); }
         };
 
         function showAccount(user) {
@@ -207,7 +233,6 @@
             document.getElementById("p-gender").textContent = user.gender;
             document.getElementById("p-address").textContent = user.address;
             
-            // Fill edit fields
             document.getElementById("edit-name").value = user.name;
             document.getElementById("edit-username").value = user.username;
             document.getElementById("edit-address").value = user.address;
@@ -215,19 +240,37 @@
             renderOrders();
         }
 
-        function renderOrders() {
-            const orders = JSON.parse(localStorage.getItem('kf_user_orders') || "[]");
+        async function renderOrders() {
             const list = document.getElementById("orders-list");
-            if (orders.length === 0) { list.innerHTML = `<p style="opacity: 0.5; padding: 1rem 0;">No builds yet.</p>`; return; }
-            list.innerHTML = orders.reverse().map(o => `
-                <div style="background: rgba(128,128,128,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid rgba(128,128,128,0.1);">
-                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.5rem;"><strong>#${o.id}</strong><span>${o.date}</span></div>
-                    <div style="font-size:0.85rem; opacity:0.8;">${o.case.name} • ${o.switch.name} • ${o.keycaps.name}</div>
-                </div>`).join('');
+            const email = localStorage.getItem("loggedInUser");
+            
+            try {
+                const res = await fetch(`/api/orders?email=${email}`);
+                const orders = await res.json();
+                
+                if (orders.length === 0) {
+                    list.innerHTML = `<p style="opacity: 0.5; padding: 1rem 0;">No builds yet.</p>`;
+                    return;
+                }
+                list.innerHTML = orders.reverse().map(o => `
+                    <div style="background: rgba(128,128,128,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid rgba(128,128,128,0.1);">
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.5rem;"><strong>#${o.id}</strong><span>${o.date}</span></div>
+                        <div style="font-size:0.85rem; opacity:0.8;">${o.case.name} • ${o.switch.name} • ${o.keycaps.name}</div>
+                    </div>`).join('');
+            } catch (e) {
+                list.innerHTML = `<p>Error loading orders.</p>`;
+            }
         }
 
-        if (localStorage.getItem("loggedInUser")) showAccount(JSON.parse(localStorage.getItem("kf_user_data")));
-        document.getElementById("logout-btn").onclick = () => { localStorage.removeItem("loggedInUser"); location.href = "index.html"; };
+        if (localStorage.getItem("loggedInUser")) {
+            showAccount(JSON.parse(localStorage.getItem("kf_user_data")));
+        }
+
+        document.getElementById("logout-btn").onclick = () => { 
+            localStorage.removeItem("loggedInUser"); 
+            localStorage.removeItem("kf_user_data");
+            location.href = "index.html"; 
+        };
     </script>
 </body>
 </html>

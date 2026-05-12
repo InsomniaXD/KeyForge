@@ -1,5 +1,5 @@
 /// ===============================
-/// THEME SYSTEM
+/// THEME SYSTEM (PERSISTENT)
 /// ===============================
 const themeToggle = document.getElementById("theme-toggle");
 const themeIcon = document.getElementById("theme-icon");
@@ -13,61 +13,61 @@ function updateThemeUI() {
   themeIcon.innerHTML = body.classList.contains("dark") ? sunIcon : moonIcon;
 }
 
-if (localStorage.getItem("theme") === "dark") {
-  body.classList.add("dark");
-}
+// Load Theme
+if (localStorage.getItem("theme") === "dark") { body.classList.add("dark"); }
 updateThemeUI();
 
 if (themeToggle) {
   themeToggle.addEventListener("click", () => {
     body.classList.toggle("dark");
-    localStorage.setItem(
-      "theme",
-      body.classList.contains("dark") ? "dark" : "light",
-    );
+    localStorage.setItem("theme", body.classList.contains("dark") ? "dark" : "light");
     updateThemeUI();
   });
 }
 
 /// ===============================
-/// AUTH (UNCHANGED)
+/// AUTH SYNC (NAVBAR UPDATES)
 /// ===============================
 function syncAuthStatus() {
-  const loggedInUser = localStorage.getItem("loggedInUser");
-  const accountLinks = document.querySelectorAll("#account-link");
-  const orderLinks = document.querySelectorAll(".nav-links a");
-
-  if (!loggedInUser) return;
-
-  accountLinks.forEach((link) => {
-    link.textContent = "Account";
-    link.href = "account.html";
-  });
-
-  orderLinks.forEach((link) => {
-    if (link.textContent.trim() === "Orders") {
-      link.href = "account.html";
-      link.style.color = "var(--color-tertiary)";
-      link.style.opacity = "1";
-    }
-  });
+  const user = localStorage.getItem("loggedInUser");
+  const accountLink = document.getElementById("account-link");
+  if (user && accountLink) {
+    accountLink.textContent = "Account";
+    accountLink.href = "account.html";
+  }
 }
 
 /// ===============================
-/// ORDERS STORAGE
+/// DATABASE: SAVE ORDER
 /// ===============================
-function getOrders() {
-  return JSON.parse(localStorage.getItem("kf_user_orders") || "[]");
+async function saveOrder(order) {
+  const email = localStorage.getItem("loggedInUser");
+  if (!email) { alert("Please log in to save your build."); return; }
+
+  const fullOrder = {
+    ...order,
+    userEmail: email,
+    date: new Date().toLocaleDateString(),
+    id: Math.floor(Math.random() * 90000) + 10000
+  };
+
+  try {
+    const res = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(fullOrder)
+    });
+    if (res.ok) console.log("Database updated.");
+  } catch (err) {
+    console.warn("DB offline. Saving to browser cache.");
+    const orders = JSON.parse(localStorage.getItem("kf_user_orders") || "[]");
+    orders.push(fullOrder);
+    localStorage.setItem("kf_user_orders", JSON.stringify(orders));
+  }
 }
 
-function saveOrder(order) {
-  const orders = getOrders();
-  orders.push(order);
-  localStorage.setItem("kf_user_orders", JSON.stringify(orders));
-}
-
 /// ===============================
-/// MODALS
+/// OVERLAYS
 /// ===============================
 function openOverlay(id) {
   const el = document.getElementById(id);
@@ -80,24 +80,9 @@ function closeOverlay(id) {
 }
 
 function placeOrder(build) {
-  saveOrder({
-    ...build,
-    date: new Date().toLocaleDateString(),
-    id: Math.floor(Math.random() * 90000) + 10000,
-  });
-
+  saveOrder(build);
   closeOverlay("checkout-overlay");
   openOverlay("success-overlay");
 }
 
-function finalizeOrder() {
-  localStorage.removeItem("kf_current_build");
-  window.location.href = "index.html";
-}
-
-/// ===============================
-/// INIT (GLOBAL ONLY)
-/// ===============================
-document.addEventListener("DOMContentLoaded", () => {
-  syncAuthStatus();
-});
+document.addEventListener("DOMContentLoaded", syncAuthStatus);
