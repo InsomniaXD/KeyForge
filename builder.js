@@ -59,7 +59,17 @@ function showStep(step) {
   if (target) target.classList.add("active");
 
   currentStep = step;
+  const title = document.getElementById("step-title");
 
+  const titles = {
+    1: "Choose Kit",
+    2: "Choose Switches",
+    3: "Choose Keycapas",
+    4: "Choose Mods",
+  };
+  if (title) {
+    title.innerText = titles[step] || "Build";
+  }
   updateProgress();
 }
 
@@ -122,6 +132,13 @@ cards.forEach((card) => {
 /* =========================
    NEXT BUTTON
 ========================= */
+document.querySelectorAll(".back-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (currentStep > 1) {
+      showStep(currentStep - 1);
+    }
+  });
+});
 document.querySelectorAll(".next-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     if (currentStep < steps.length) {
