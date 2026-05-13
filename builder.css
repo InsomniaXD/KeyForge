@@ -146,23 +146,68 @@
   height: calc(100vh - 82px);
   padding: 3rem 2rem;
   border-left: 1px solid rgba(128, 128, 128, 0.1);
-  overflow: hidden;
+  overflow-y: auto;
+}
+
+.summary-panel h3 {
+  margin-bottom: 1.5rem;
 }
 
 /* =========================
    SUMMARY CONTENT
 ========================= */
 
-.summary-row {
+.summary-card {
+  background: rgba(128, 128, 128, 0.05);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.8rem;
   display: flex;
-  justify-content: space-between;
-  padding: 1rem 0;
-  border-bottom: 1px solid rgba(128, 128, 128, 0.08);
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
-.summary-row span:last-child {
-  color: var(--color-tertiary);
+.summary-label {
+  font-size: 0.8rem;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.6;
+}
+
+.summary-value {
+  font-weight: 500;
+  color: var(--color-tertiary);
+  line-height: 1.4;
+}
+
+.summary-value .empty {
+  opacity: 0.4;
+  font-style: italic;
+  font-weight: 400;
+  color: inherit;
+}
+
+.summary-divider {
+  height: 1px;
+  background: rgba(128, 128, 128, 0.2);
+  margin: 1.5rem 0;
+}
+
+.clear-btn {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 8px;
+  background: transparent;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+  color: inherit;
+}
+
+.clear-btn:hover {
+  background: rgba(128, 128, 128, 0.1);
 }
 
 /* =========================
@@ -194,4 +239,34 @@
   background: var(--color-primary);
 
   border-bottom: 1px solid rgba(128, 128, 128, 0.08);
+}
+/* =========================
+   HEADER BUTTONS
+========================= */
+
+.back-btn,
+.next-btn {
+  padding: 0.8rem 1.4rem;
+  border: none;
+  border-radius: 17px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: 0.2s;
+}
+.summary-item {
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  background: rgba(128, 128, 128, 0.08);
+  margin-top: 0.4rem;
+  font-weight: 600;
+}
+
+.summary-item.selected {
+  background: rgba(10, 92, 19, 0.15);
+  border-left: 3px solid var(--color-tertiary);
+}
+
+.empty {
+  opacity: 0.4;
+  font-style: italic;
 }
