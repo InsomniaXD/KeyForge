@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+const products = [
+  
+>>>>>>> Builder-Changes
 
 /// ===============================
 /// THEME SYSTEM
