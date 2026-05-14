@@ -1,42 +1,8 @@
-const products = [
-  // CASES (Step 1)
-  { id: 1,  category: "case",    name: "Chillkey ND75 Elegant Purple",     price: 85.0,  desc: "75% 1.6mm PCB ISO Barebones Kit",            img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/nd75prpl.png?v=1728039628" },
-  { id: 2,  category: "case",    name: "Chillkey ND75 Mountain Blue",       price: 85.0,  desc: "75% 1.6mm PCB ISO Barebones Kit",            img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/nd75blu.png?v=1728039636" },
-  { id: 3,  category: "case",    name: "Glorious GMMK 2 Black",             price: 70.0,  desc: "65% ANSI Keyboard Barebones Kit",            img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/products/GMMK265bareboneANSI004.jpg?v=1656929772" },
-  { id: 4,  category: "case",    name: "Zuoya GMK67S Black",                price: 55.0,  desc: "65% ANSI Keyboard Barebones Kit",            img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/9_1800x1800_ed3dc5de-0118-4a28-b01b-87dc94f59e0b.webp?v=1727359744" },
-  { id: 5,  category: "case",    name: "Zuoya GMK67S White",                price: 55.0,  desc: "65% ANSI Keyboard Barebones Kit",            img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/10_1800x1800_52d2913d-7bcc-4e98-8623-0f64e85bb0e4.webp?v=1727360085" },
-  { id: 6,  category: "case",    name: "Keychron Q4 QMK Navy Blue",         price: 120.0, desc: "60% Aluminium RGB ANSI Barebones",           img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/Keychron-Q4-60-Percent-Layout-QMK-Mechanical-Keyboard-barebone-blue-ANSI_1800x1800_1800x1800_bc897d54-81ac-41d5-9fdb-8ac356508206.webp?v=1689424690" },
-  { id: 7,  category: "case",    name: "Keychron Q4 QMK Silver",            price: 120.0, desc: "60% Aluminium RGB ANSI Barebones",           img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/Keychron-Q4-60-Percent-Layout-QMK-Mechanical-Keyboard---grey---ANSI_1800x1800_1800x1800_9f061808-a814-40d8-8c18-1f66ae7404f8.webp?v=1689424664" },
-
-  // SWITCHES (Step 2)
-  { id: 8,  category: "switch",  name: "Akko POM Silver",                   price: 35.0,  desc: "90g Actuation Force Linear switch.",         img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/products/POM-Silver.jpg?v=1659550178" },
-  { id: 9,  category: "switch",  name: "C³Equalz Banana Split",             price: 42.0,  desc: "90g Actuation Force Linear switch.",         img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/products/Ha0e0b2b3a29b4454b1361f41a8f79fe5S.png?v=1653908419" },
-  { id: 10, category: "switch",  name: "C³Equalz Tangerine Dark Green",     price: 45.0,  desc: "67g Actuation Force Linear Switch",          img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/products/c3equalz-x-tkc-tangerine-linear-switches-145416_fc2d09fc-0ca6-4550-bd1d-22b97c799759.jpg?v=1653847522" },
-  { id: 11, category: "switch",  name: "Akko POM Brown",                    price: 35.0,  desc: "90g Actuation Force Tactile switch.",        img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/products/POM-Brown.jpg?v=1659550253" },
-  { id: 12, category: "switch",  name: "Feker Holy Panda",                  price: 50.0,  desc: "90g Actuation Force Tactile Switch",         img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/4_1080x1080_95cb8d75-c944-4acd-9edc-7a754e2b9dcc.png?v=1704625245" },
-  { id: 13, category: "switch",  name: "Gateron Beer",                      price: 38.0,  desc: "90g Actuation Force Tactile Pre-Lubed.",     img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/c4cec3c15f.jpg?v=1704975252" },
-  { id: 14, category: "switch",  name: "Chilkey EF Dopamine",               price: 40.0,  desc: "90g Actuation Force Blue Linear Switch",     img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/ND75_Switches_01.webp?v=1737198130" },
-  { id: 15, category: "switch",  name: "Gateron Baby Raccoon",              price: 42.0,  desc: "90g Actuation Force Linear Pre-Lubed.",      img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/products/Hdcb86d9d03324d2aa8d4e48ce3905b6ct.png_960x960_1c261cab-90b8-4200-a319-5b7783337068.webp?v=1675605831" },
-  { id: 16, category: "switch",  name: "Gateron Black KS-9",                price: 25.0,  desc: "90g Actuation Force Linear Switch",          img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/products/1_540x_887967a1-778e-46e5-86b8-c4e445fe08c9.webp?v=1652022725" },
-  { id: 17, category: "switch",  name: "JWK Nylon T1",                      price: 30.0,  desc: "90g Actuation Force Tactile Switches",       img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/jwk-black-t1-tactile-switches-173172.webp?v=1769684491" },
-  { id: 18, category: "switch",  name: "Wuque Studio WS",                   price: 48.0,  desc: "105g Heavy Tactile Switch",                  img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/wuque-ws-heavy-tactile-switches-536726_503125a8-e1e9-4827-b65e-2858f265f2b1.webp?v=1713964805" },
-  { id: 19, category: "switch",  name: "Gateron Melodic",                   price: 40.0,  desc: "90g Clicky Pre-Lubed Switch",                img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/e0a0b55e42.jpg?v=1704974707" },
-
-  // KEYCAPS (Step 3)
-  { id: 20, category: "keycaps", name: "DaYe Classic Red Cherry Profile",   price: 45.0,  desc: "ABS | Cherry | ANSI | ISO",                 img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/Keycaps_9.png?v=1727521232" },
-  { id: 21, category: "keycaps", name: "DaYe Lime Cherry Profile",          price: 45.0,  desc: "ABS | Cherry | ANSI | ISO",                 img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/variant-image-20.jpg?v=1727357078" },
-  { id: 22, category: "keycaps", name: "DaYe Nuke Data Cherry Profile",     price: 45.0,  desc: "ABS | Cherry | ANSI | ISO",                 img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/rn-image_picker_lib_temp_65a129ed-af29-41d9-a5a9-963530efde89.webp?v=1727377362" },
-  { id: 23, category: "keycaps", name: "TAI-HAO Sandy Beach",               price: 50.0,  desc: "PBT | OEM | ANSI | ISO",                    img: "https://cdn.shopify.com/s/files/1/0562/7713/9620/files/variant-image-19.jpg?v=1727521224" },
-
-  // MODS (Step 4)
-  { id: 24, category: "mods",    name: "Foam",                              price: 15.0,  desc: "Sound dampening for deeper sound profile.",  img: "images/foam.jpg" },
-  { id: 25, category: "mods",    name: "Lube",                              price: 10.0,  desc: "Smooths switches for better typing feel.",   img: "images/lube.jpg" },
-  { id: 26, category: "mods",    name: "Wireless",                          price: 25.0,  desc: "Adds Bluetooth connectivity to your board.", img: "images/wireless.jpg" },
-];
 
 /// ===============================
 /// THEME SYSTEM
 /// ===============================
+let products = [];
 const themeToggle = document.getElementById("theme-toggle");
 const themeIcon   = document.getElementById("theme-icon");
 const body        = document.body;
@@ -104,7 +70,7 @@ function renderGrid(category) {
     </div>
   `).join("");
 }
-["case", "switch", "keycaps", "mods"].forEach(renderGrid);
+
 
 /// ===============================
 /// SHOW STEP
@@ -306,7 +272,23 @@ document.getElementById("checkout-confirm").addEventListener("click", async () =
 });
 
 /// ===============================
-/// INIT
+/// INIT & DATA FETCH
 /// ===============================
-showStep(1);
-syncSummary();
+
+
+async function init() {
+  try {
+    const response = await fetch('/api/products');
+    products = await response.json();
+
+    // ONLY NOW do we run the grid rendering
+    ["case", "switch", "keycaps", "mods"].forEach(renderGrid);
+    
+    showStep(1);
+    syncSummary();
+  } catch (err) {
+    console.error("Init failed:", err);
+  }
+}
+
+init();
