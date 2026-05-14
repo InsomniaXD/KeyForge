@@ -6,10 +6,111 @@
     <title>KeyForge | Builder</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/builder.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    <style>
+      /* CHECKOUT OVERLAY */
+      .checkout-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      .checkout-overlay.open { display: flex; }
+
+      .checkout-modal {
+        background: var(--color-primary);
+        border: 1px solid rgba(128,128,128,0.2);
+        border-radius: 20px;
+        padding: 2.5rem;
+        width: 90%;
+        max-width: 480px;
+        position: relative;
+      }
+
+      .checkout-modal h2 { font-size: 1.6rem; margin-bottom: 0.3rem; }
+      .checkout-modal .subtitle { opacity: 0.5; font-size: 0.85rem; margin-bottom: 2rem; }
+
+      .checkout-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.7rem 0;
+        border-bottom: 1px solid rgba(128,128,128,0.1);
+        font-size: 0.9rem;
+      }
+      .checkout-line:last-of-type { border-bottom: none; }
+      .checkout-line .label { opacity: 0.6; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+      .checkout-line .value { font-weight: 700; color: var(--color-tertiary); }
+
+      .checkout-total {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 900;
+        font-size: 1.2rem;
+        margin: 1.5rem 0 1.5rem;
+        padding-top: 1rem;
+        border-top: 2px solid rgba(128,128,128,0.15);
+      }
+
+      .checkout-actions { display: flex; gap: 1rem; }
+      .checkout-actions .cancel-btn {
+        flex: 1;
+        padding: 0.9rem;
+        border: 1px solid rgba(128,128,128,0.3);
+        border-radius: 10px;
+        background: transparent;
+        color: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        transition: 0.2s;
+      }
+      .checkout-actions .cancel-btn:hover { background: rgba(128,128,128,0.1); }
+      .checkout-actions .confirm-btn {
+        flex: 2;
+        padding: 0.9rem;
+        border: none;
+        border-radius: 10px;
+        background: var(--color-tertiary);
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 1rem;
+        transition: 0.2s;
+      }
+      .checkout-actions .confirm-btn:hover { background: var(--color-accent); }
+
+      /* SUCCESS OVERLAY */
+      .success-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      .success-overlay.open { display: flex; }
+      .success-modal {
+        background: var(--color-primary);
+        border: 1px solid rgba(128,128,128,0.2);
+        border-radius: 20px;
+        padding: 3rem 2.5rem;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+      }
+      .success-modal .tick {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+      .success-modal h2 { margin-bottom: 0.5rem; }
+      .success-modal p { opacity: 0.6; margin-bottom: 2rem; font-size: 0.9rem; }
+    </style>
   </head>
 
   <body>
@@ -20,30 +121,17 @@
         </a>
         <div class="nav-links">
           <a href="builder.html" class="nav-build-link">Build</a>
-          <a href="#">Orders</a>
+          <a href="account.html">Orders</a>
         </div>
       </div>
-
       <div class="nav-right">
         <div class="nav-links">
           <a href="about.html">About</a>
-          <a href="#">Support</a>
           <a href="account.html" id="account-link">Login</a>
         </div>
         <div class="nav-separator"></div>
         <button id="theme-toggle" aria-label="Toggle Dark Mode">
-          <svg
-            id="theme-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></svg>
+          <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
         </button>
       </div>
     </nav>
@@ -53,7 +141,6 @@
         <div class="sidebar-inner">
           <h1>Build your perfect board.</h1>
           <p class="sidebar-copy">Choose each part step by step.</p>
-
           <div class="progress">
             <div class="progress-step active" data-progress="1">01 Kit</div>
             <div class="progress-step" data-progress="2">02 Switch</div>
@@ -72,21 +159,10 @@
           </div>
         </div>
 
-        <div class="step active" id="step-1">
-          <div class="option-grid" id="grid-case"></div>
-        </div>
-
-        <div class="step" id="step-2">
-          <div class="option-grid" id="grid-switch"></div>
-        </div>
-
-        <div class="step" id="step-3">
-          <div class="option-grid" id="grid-keycaps"></div>
-        </div>
-
-        <div class="step" id="step-4">
-          <div class="option-grid" id="grid-mods"></div>
-        </div>
+        <div class="step active" id="step-1"><div class="option-grid" id="grid-case"></div></div>
+        <div class="step" id="step-2"><div class="option-grid" id="grid-switch"></div></div>
+        <div class="step" id="step-3"><div class="option-grid" id="grid-keycaps"></div></div>
+        <div class="step" id="step-4"><div class="option-grid" id="grid-mods"></div></div>
       </section>
 
       <aside class="summary-panel">
@@ -94,50 +170,77 @@
 
         <div class="summary-card">
           <span class="summary-label">Kit</span>
-          <div id="summary-1" class="summary-value">
-            <span class="empty">Not selected</span>
-          </div>
+          <div id="summary-1" class="summary-value"><span class="empty">Not selected</span></div>
         </div>
-
         <div class="summary-card">
           <span class="summary-label">Switch</span>
-          <div id="summary-2" class="summary-value">
-            <span class="empty">Not selected</span>
-          </div>
+          <div id="summary-2" class="summary-value"><span class="empty">Not selected</span></div>
         </div>
-
         <div class="summary-card">
           <span class="summary-label">Keycaps</span>
-          <div id="summary-3" class="summary-value">
-            <span class="empty">Not selected</span>
-          </div>
+          <div id="summary-3" class="summary-value"><span class="empty">Not selected</span></div>
         </div>
-
         <div class="summary-card">
           <span class="summary-label">Mods</span>
-          <div id="summary-4" class="summary-value">
-            <span class="empty">Not selected</span>
-          </div>
+          <div id="summary-4" class="summary-value"><span class="empty">Not selected</span></div>
         </div>
 
         <div class="summary-divider"></div>
 
-        <div
-          class="summary-row total-row"
-          style="
-            display: flex;
-            justify-content: space-between;
-            font-weight: 900;
-            margin-bottom: 1rem;
-          "
-        >
+        <div style="display:flex;justify-content:space-between;font-weight:900;margin-bottom:1rem;">
           <span>Total</span>
           <span id="total-price">£0.00</span>
         </div>
 
+        <button id="checkout-btn" class="cta-button" style="width:100%;margin-bottom:0.8rem;">Checkout</button>
         <button id="clear-build-btn" class="clear-btn">Clear Build</button>
       </aside>
     </main>
+
+    <!-- CHECKOUT OVERLAY -->
+    <div class="checkout-overlay" id="checkout-overlay">
+      <div class="checkout-modal">
+        <h2>Review Your Build</h2>
+        <p class="subtitle">Confirm your selections before saving.</p>
+
+        <div class="checkout-line">
+          <span class="label">Kit</span>
+          <span class="value" id="co-case">—</span>
+        </div>
+        <div class="checkout-line">
+          <span class="label">Switch</span>
+          <span class="value" id="co-switch">—</span>
+        </div>
+        <div class="checkout-line">
+          <span class="label">Keycaps</span>
+          <span class="value" id="co-keycaps">—</span>
+        </div>
+        <div class="checkout-line">
+          <span class="label">Mods</span>
+          <span class="value" id="co-mods">None</span>
+        </div>
+
+        <div class="checkout-total">
+          <span>Total</span>
+          <span id="co-total">£0.00</span>
+        </div>
+
+        <div class="checkout-actions">
+          <button class="cancel-btn" id="checkout-cancel">Cancel</button>
+          <button class="confirm-btn" id="checkout-confirm">Save Build</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUCCESS OVERLAY -->
+    <div class="success-overlay" id="success-overlay">
+      <div class="success-modal">
+        <div class="tick">✓</div>
+        <h2>Build Saved!</h2>
+        <p>Your build has been saved to your account.</p>
+        <button class="cta-button" style="width:100%;" onclick="window.location.href='account.html'">View Orders</button>
+      </div>
+    </div>
 
     <script src="js/builder.js"></script>
   </body>
