@@ -51,10 +51,3 @@ app.get("/api/orders", (req, res) => {
    SERVER START
 ========================= */
 app.listen(3000, () => console.log("Server running on http://localhost:3000"));
-if (err) return res.status(500).json({ error: err.message });
-/* =========================
-   MISSING PRODUCT
-========================= */
-if (!products) {
-  return res.status(500).json({ error: "Products missing" });
-}
