@@ -565,7 +565,9 @@ document.addEventListener("click", (e) => {
 showStep(1);
 /* =========================
 
-    CHECKOUT - SAVE BUILD TO ACCOUNT*/
+/* =========================
+    CHECKOUT - SAVE BUILD TO LOCALSTORAGE
+========================= */
 document.getElementById("checkout-btn").addEventListener("click", () => {
   const loggedInUser = localStorage.getItem("loggedInUser");
 
@@ -575,7 +577,6 @@ document.getElementById("checkout-btn").addEventListener("click", () => {
     return;
   }
 
-  // This sends your 'build' object from builder.js to the server.js database
   const orderData = {
     userEmail: loggedInUser,
     date: new Date().toLocaleDateString(),
@@ -587,16 +588,15 @@ document.getElementById("checkout-btn").addEventListener("click", () => {
     total: document.getElementById("total-price").innerText
   };
 
-  fetch('/api/orders', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(orderData)
-  })
-  .then(res => {
-    if(res.ok) {
-      alert("Build saved to your account!");
-      window.location.href = "account.html";
-    }
-  })
-  .catch(err => console.error("Database Error:", err));
+  // Get existing orders from localStorage
+  const existingOrders = JSON.parse(localStorage.getItem("kf_orders") || "[]");
+  
+  // Add new order
+  existingOrders.push(orderData);
+  
+  // Save back to localStorage
+  localStorage.setItem("kf_orders", JSON.stringify(existingOrders));
+
+  alert("Build saved to your account!");
+  window.location.href = "account.html";
 });
