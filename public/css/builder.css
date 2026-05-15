@@ -5,7 +5,6 @@
 .builder-page {
   min-height: calc(100vh - 82px);
 }
-
 /* =========================
    LEFT SIDEBAR
 ========================= */
@@ -125,15 +124,38 @@
 /* =========================
    PRODUCT IMAGES
 ========================= */
-
 .option-card img {
   width: 100%;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  height: 180px;
+  object-fit: contain;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  display: block;
+
+  /* This creates a 'Product Box' look */
+  /* Using a very light gray makes white-background images blend in perfectly */
+  background-color: #f9f9f9;
+
+  /* Adds a subtle inner shadow to make the product 'pop' */
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+}
+.option-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Ensures all cards in a row are the same height */
 }
 
+.option-card h4 {
+  margin-top: auto; /* Pushes text to the top, but keeps alignment clean */
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+
+/* Optional: Slight zoom effect on the image when hovering the card */
+.option-card:hover img {
+  transform: scale(1.05);
+}
 /* =========================
    RIGHT SUMMARY PANEL
 ========================= */
@@ -194,6 +216,11 @@
   margin: 1.5rem 0;
 }
 
+.checkout-btn {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 20px;
+}
 .clear-btn {
   width: 100%;
   padding: 0.8rem;
