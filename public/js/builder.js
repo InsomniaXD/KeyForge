@@ -1,13 +1,12 @@
-
 /// ===============================
 /// THEME SYSTEM
 /// ===============================
 let products = [];
 const themeToggle = document.getElementById("theme-toggle");
-const themeIcon   = document.getElementById("theme-icon");
-const body        = document.body;
+const themeIcon = document.getElementById("theme-icon");
+const body = document.body;
 
-const sunIcon  = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
+const sunIcon = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
 const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
 
 function updateThemeUI() {
@@ -15,13 +14,18 @@ function updateThemeUI() {
   themeIcon.innerHTML = body.classList.contains("dark") ? sunIcon : moonIcon;
 }
 
-if (localStorage.getItem("theme") === "dark") { body.classList.add("dark"); }
+if (localStorage.getItem("theme") === "dark") {
+  body.classList.add("dark");
+}
 updateThemeUI();
 
 if (themeToggle) {
   themeToggle.addEventListener("click", () => {
     body.classList.toggle("dark");
-    localStorage.setItem("theme", body.classList.contains("dark") ? "dark" : "light");
+    localStorage.setItem(
+      "theme",
+      body.classList.contains("dark") ? "dark" : "light",
+    );
     updateThemeUI();
   });
 }
@@ -30,11 +34,11 @@ if (themeToggle) {
 /// AUTH SYNC
 /// ===============================
 function syncAuthStatus() {
-  const user        = localStorage.getItem("loggedInUser");
+  const user = localStorage.getItem("loggedInUser");
   const accountLink = document.getElementById("account-link");
   if (user && accountLink) {
     accountLink.textContent = "Account";
-    accountLink.href        = "account.html";
+    accountLink.href = "account.html";
   }
 }
 syncAuthStatus();
@@ -43,15 +47,15 @@ syncAuthStatus();
 /// BUILD STATE
 /// ===============================
 let currentStep = 1;
-const steps         = document.querySelectorAll(".step");
+const steps = document.querySelectorAll(".step");
 const progressSteps = document.querySelectorAll(".progress-step");
-const stepMap       = { 1: "case", 2: "switch", 3: "keycaps", 4: "mods" };
+const stepMap = { 1: "case", 2: "switch", 3: "keycaps", 4: "mods" };
 
 let build = {
-  case:    { id: null, name: "-", price: 0, selected: false },
-  switch:  { id: null, name: "-", price: 0, selected: false },
+  case: { id: null, name: "-", price: 0, selected: false },
+  switch: { id: null, name: "-", price: 0, selected: false },
   keycaps: { id: null, name: "-", price: 0, selected: false },
-  mods:    [],
+  mods: [],
 };
 
 /// ===============================
@@ -60,27 +64,35 @@ let build = {
 function renderGrid(category) {
   const container = document.getElementById(`grid-${category}`);
   if (!container) return;
-  const filtered = products.filter(p => p.category === category);
-  container.innerHTML = filtered.map(product => `
+  const filtered = products.filter((p) => p.category === category);
+  container.innerHTML = filtered
+    .map(
+      (product) => `
     <div class="option-card" data-id="${product.id}" data-category="${product.category}">
       <img src="${product.img}" alt="${product.name}" onerror="this.style.display='none'" />
       <h4>${product.name}</h4>
       <p class="desc">${product.desc}</p>
       <p class="price">£${product.price.toFixed(2)}</p>
     </div>
-  `).join("");
+  `,
+    )
+    .join("");
 }
-
 
 /// ===============================
 /// SHOW STEP
 /// ===============================
 function showStep(step) {
-  steps.forEach(s => s.classList.remove("active"));
+  steps.forEach((s) => s.classList.remove("active"));
   const target = document.getElementById(`step-${step}`);
   if (target) target.classList.add("active");
   currentStep = step;
-  const titles = { 1: "Choose Kit", 2: "Choose Switches", 3: "Choose Keycaps", 4: "Choose Mods" };
+  const titles = {
+    1: "Choose Kit",
+    2: "Choose Switches",
+    3: "Choose Keycaps",
+    4: "Choose Mods",
+  };
   const titleEl = document.getElementById("step-title");
   if (titleEl) titleEl.innerText = titles[step] || "Build";
   updateProgress();
@@ -90,15 +102,15 @@ function showStep(step) {
 /// PROGRESS
 /// ===============================
 function updateProgress() {
-  progressSteps.forEach(p => {
+  progressSteps.forEach((p) => {
     const step = Number(p.dataset.progress);
-    const key  = stepMap[step];
+    const key = stepMap[step];
     const done = key === "mods" ? build.mods.length > 0 : build[key].selected;
     p.classList.toggle("active", step === currentStep || done);
     if (step > 1) {
       const unlocked = build[stepMap[step - 1]].selected;
       p.style.pointerEvents = unlocked ? "auto" : "none";
-      p.style.opacity       = unlocked ? "1"    : "0.3";
+      p.style.opacity = unlocked ? "1" : "0.3";
     }
   });
 }
@@ -110,17 +122,23 @@ function renderSummaryItem(id, data, isMulti = false) {
   const el = document.getElementById(id);
   if (!el) return;
   if (isMulti) {
-    el.innerHTML = data.length ? data.map(item => `<div>${item.name}</div>`).join("") : `<span class="empty">Not selected</span>`;
+    el.innerHTML = data.length
+      ? data.map((item) => `<div>${item.name}</div>`).join("")
+      : `<span class="empty">Not selected</span>`;
     return;
   }
-  el.innerHTML = data.selected ? `<div>${data.name}</div>` : `<span class="empty">Not selected</span>`;
+  el.innerHTML = data.selected
+    ? `<div>${data.name}</div>`
+    : `<span class="empty">Not selected</span>`;
 }
 
 function getTotal() {
-  return (build.case.price    || 0) +
-         (build.switch.price  || 0) +
-         (build.keycaps.price || 0) +
-         build.mods.reduce((sum, m) => sum + (m.price || 0), 0);
+  return (
+    (build.case.price || 0) +
+    (build.switch.price || 0) +
+    (build.keycaps.price || 0) +
+    build.mods.reduce((sum, m) => sum + (m.price || 0), 0)
+  );
 }
 
 function syncSummary() {
@@ -135,26 +153,38 @@ function syncSummary() {
 /// ===============================
 /// CARD CLICK (delegated)
 /// ===============================
-document.addEventListener("click", e => {
+document.addEventListener("click", (e) => {
   const card = e.target.closest(".option-card");
   if (!card) return;
-  const productId   = parseInt(card.dataset.id);
-  const category    = card.dataset.category;
-  const productData = products.find(p => p.id === productId);
+  const productId = parseInt(card.dataset.id);
+  const category = card.dataset.category;
+  const productData = products.find((p) => p.id === productId);
   if (!productData) return;
 
   if (category === "mods") {
-    const index = build.mods.findIndex(m => m.id === productId);
+    const index = build.mods.findIndex((m) => m.id === productId);
     if (index > -1) {
       build.mods.splice(index, 1);
       card.classList.remove("selected");
     } else {
-      build.mods.push({ id: productData.id, name: productData.name, price: productData.price, selected: true });
+      build.mods.push({
+        id: productData.id,
+        name: productData.name,
+        price: productData.price,
+        selected: true,
+      });
       card.classList.add("selected");
     }
   } else {
-    build[category] = { id: productData.id, name: productData.name, price: productData.price, selected: true };
-    card.parentElement.querySelectorAll(".option-card").forEach(c => c.classList.remove("selected"));
+    build[category] = {
+      id: productData.id,
+      name: productData.name,
+      price: productData.price,
+      selected: true,
+    };
+    card.parentElement
+      .querySelectorAll(".option-card")
+      .forEach((c) => c.classList.remove("selected"));
     card.classList.add("selected");
   }
 
@@ -165,13 +195,17 @@ document.addEventListener("click", e => {
 /// ===============================
 /// NAV BUTTONS
 /// ===============================
-document.querySelectorAll(".back-btn").forEach(btn => {
-  btn.addEventListener("click", () => { if (currentStep > 1) showStep(currentStep - 1); });
+document.querySelectorAll(".back-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (currentStep > 1) showStep(currentStep - 1);
+  });
 });
-document.querySelectorAll(".next-btn").forEach(btn => {
-  btn.addEventListener("click", () => { if (currentStep < steps.length) showStep(currentStep + 1); });
+document.querySelectorAll(".next-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (currentStep < steps.length) showStep(currentStep + 1);
+  });
 });
-progressSteps.forEach(p => {
+progressSteps.forEach((p) => {
   p.addEventListener("click", () => {
     const step = Number(p.dataset.progress);
     if (step > 1 && !build[stepMap[step - 1]].selected) return;
@@ -186,12 +220,14 @@ const clearBtn = document.getElementById("clear-build-btn");
 if (clearBtn) {
   clearBtn.addEventListener("click", () => {
     build = {
-      case:    { id: null, name: "-", price: 0, selected: false },
-      switch:  { id: null, name: "-", price: 0, selected: false },
+      case: { id: null, name: "-", price: 0, selected: false },
+      switch: { id: null, name: "-", price: 0, selected: false },
       keycaps: { id: null, name: "-", price: 0, selected: false },
-      mods:    [],
+      mods: [],
     };
-    document.querySelectorAll(".option-card").forEach(c => c.classList.remove("selected"));
+    document
+      .querySelectorAll(".option-card")
+      .forEach((c) => c.classList.remove("selected"));
     showStep(1);
     syncSummary();
     updateProgress();
@@ -199,91 +235,77 @@ if (clearBtn) {
 }
 
 /// ===============================
-/// CHECKOUT OVERLAY
+/// CART LOGIC
 /// ===============================
-const checkoutBtn     = document.getElementById("checkout-btn");
-const checkoutOverlay = document.getElementById("checkout-overlay");
-const successOverlay  = document.getElementById("success-overlay");
+const addToCartBtn = document.getElementById("add-to-cart-btn");
+const cartToast = document.getElementById("cart-toast");
 
-// Open checkout overlay — populate summary
-checkoutBtn.addEventListener("click", () => {
-  const loggedInUser = localStorage.getItem("loggedInUser");
-  if (!loggedInUser) {
-    alert("Please log in to save your build.");
-    window.location.href = "account.html";
-    return;
-  }
-  if (!build.case.selected || !build.switch.selected || !build.keycaps.selected) {
-    alert("Please select a Kit, Switch, and Keycaps before checking out.");
-    return;
-  }
+// Updates the number in the Navbar: "Cart (2)"
+function updateCartCount() {
+  const cartLink = document.getElementById("cart-link");
+  if (!cartLink) return;
+  const cart = JSON.parse(localStorage.getItem("kf_cart") || "[]");
+  cartLink.innerText = `Cart (${cart.length})`;
+}
 
-  // Populate overlay
-  document.getElementById("co-case").textContent    = `${build.case.name} — £${build.case.price.toFixed(2)}`;
-  document.getElementById("co-switch").textContent  = `${build.switch.name} — £${build.switch.price.toFixed(2)}`;
-  document.getElementById("co-keycaps").textContent = `${build.keycaps.name} — £${build.keycaps.price.toFixed(2)}`;
-  document.getElementById("co-mods").textContent    = build.mods.length ? build.mods.map(m => m.name).join(", ") : "None";
-  document.getElementById("co-total").textContent   = `£${getTotal().toFixed(2)}`;
+// Check cart count as soon as the page loads
+document.addEventListener("DOMContentLoaded", updateCartCount);
 
-  checkoutOverlay.classList.add("open");
-});
+if (addToCartBtn) {
+  addToCartBtn.addEventListener("click", () => {
+    // 1. Prevent adding incomplete builds
+    if (
+      !build.case.selected ||
+      !build.switch.selected ||
+      !build.keycaps.selected
+    ) {
+      alert(
+        "Please select a Kit, Switch, and Keycaps before adding to your cart.",
+      );
+      return;
+    }
 
-// Cancel
-document.getElementById("checkout-cancel").addEventListener("click", () => {
-  checkoutOverlay.classList.remove("open");
-});
+    // 2. Package the current build into an object
+    const cartItem = {
+      id: Math.random().toString(36).substr(2, 9), // Generates a random ID for this build
+      case: build.case,
+      switch: build.switch,
+      keycaps: build.keycaps,
+      mods: build.mods,
+      totalPrice: getTotal(),
+    };
 
-// Close overlay if clicking backdrop
-checkoutOverlay.addEventListener("click", e => {
-  if (e.target === checkoutOverlay) checkoutOverlay.classList.remove("open");
-});
+    // 3. Save to LocalStorage array (so cart.html can read it)
+    const cart = JSON.parse(localStorage.getItem("kf_cart") || "[]");
+    cart.push(cartItem);
+    localStorage.setItem("kf_cart", JSON.stringify(cart));
 
-// Confirm — save to server / localStorage
-document.getElementById("checkout-confirm").addEventListener("click", async () => {
-  const loggedInUser = localStorage.getItem("loggedInUser");
+    // 4. Update the Navbar counter
+    updateCartCount();
 
-  const orderData = {
-    userEmail: loggedInUser,
-    date:      new Date().toLocaleDateString(),
-    id:        Math.floor(Math.random() * 90000) + 10000,
-    case:      build.case,
-    switch:    build.switch,
-    keycaps:   build.keycaps,
-    mods:      build.mods,
-    total:     `£${getTotal().toFixed(2)}`,
-  };
+    // 5. Show the success Toast Notification
+    if (cartToast) {
+      cartToast.classList.add("show");
+      setTimeout(() => {
+        cartToast.classList.remove("show");
+      }, 3000); // Hides after 3 seconds
+    }
 
-  try {
-    const res = await fetch("/api/orders", {
-      method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify(orderData),
-    });
-    if (!res.ok) throw new Error();
-  } catch {
-    // Server offline — fall back to localStorage
-    const existing = JSON.parse(localStorage.getItem("kf_orders") || "[]");
-    existing.push(orderData);
-    localStorage.setItem("kf_orders", JSON.stringify(existing));
-  }
-
-  checkoutOverlay.classList.remove("open");
-  successOverlay.classList.add("open");
-});
+    // 6. Reset the builder for the next keyboard
+    if (clearBtn) clearBtn.click();
+  });
+}
 
 /// ===============================
 /// INIT & DATA FETCH
 /// ===============================
-
-
 async function init() {
   try {
-    const response = await fetch('/api/products');
+    const response = await fetch("/api/products");
     products = await response.json();
 
-    // ONLY NOW do we run the grid rendering
     ["case", "switch", "keycaps", "mods"].forEach(renderGrid);
-    
+
     showStep(1);
     syncSummary();
   } catch (err) {

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KeyForge | Cart</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav>
+      <div class="nav-left">
+        <a href="index.html" class="logo-link"
+          ><div class="logo">KEY<span>FORGE</span></div></a
+        >
+        <div class="nav-links">
+          <a href="builder.html">Build</a>
+          <a href="account.html">Orders</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="nav-links">
+          <a href="about.html">About</a>
+          <a href="account.html">Login</a>
+          <a
+            href="cart.html"
+            style="color: var(--color-tertiary); font-weight: 900"
+            >Cart</a
+          >
+        </div>
+        <div class="nav-separator"></div>
+        <button id="theme-toggle" aria-label="Toggle Dark Mode">
+          <svg id="theme-icon" width="20" height="20"></svg>
+        </button>
+      </div>
+    </nav>
+
+    <div class="account-card cart-wrapper">
+      <div style="text-align: left; margin-bottom: 1rem">
+        <a
+          href="builder.html"
+          style="
+            text-decoration: none;
+            color: var(--color-tertiary);
+            font-weight: 700;
+            font-size: 0.9rem;
+          "
+          >← Back to Builder</a
+        >
+      </div>
+
+      <h1 style="margin-bottom: 2rem; text-align: left">Your Cart</h1>
+
+      <div id="cart-items-container">
+        <p
+          id="empty-cart-msg"
+          style="text-align: center; opacity: 0.5; padding: 4rem 2rem"
+        >
+          Your cart is empty. <br />
+          <a
+            href="builder.html"
+            style="color: var(--color-tertiary); font-weight: 700"
+            >Start building →</a
+          >
+        </p>
+      </div>
+
+      <div class="cart-grand-total">
+        <span>Grand Total:</span>
+        <span id="cart-grand-total-amount">£0.00</span>
+      </div>
+
+      <div class="shipping-section">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+          "
+        >
+          <h2 style="margin: 0">Shipping Address</h2>
+          <button
+            id="edit-address-btn"
+            class="remove-btn"
+            style="
+              border: 1px solid var(--color-tertiary);
+              color: var(--color-tertiary);
+              padding: 5px 15px;
+            "
+          >
+            Edit
+          </button>
+        </div>
+
+        <div id="address-display" class="address-box">
+          <p id="display-street" style="font-weight: 700">No address saved.</p>
+          <p id="display-city-zip" style="opacity: 0.7">
+            Click edit to add your shipping details.
+          </p>
+        </div>
+
+        <form id="address-form" class="signup-grid" style="display: none">
+          <div class="input-group" style="grid-column: span 2">
+            <label>Street Address</label>
+            <input
+              type="text"
+              id="input-address"
+              required
+              placeholder="123 Forge Lane"
+            />
+          </div>
+          <div class="input-group">
+            <label>City</label>
+            <input type="text" id="input-city" required placeholder="London" />
+          </div>
+          <div class="input-group">
+            <label>Postal Code</label>
+            <input
+              type="text"
+              id="input-postal"
+              required
+              placeholder="E1 6AN"
+            />
+          </div>
+          <div style="grid-column: span 2; text-align: right">
+            <button
+              type="submit"
+              class="cta-button"
+              style="padding: 0.6rem 2rem; border-radius: 8px"
+            >
+              Save Address
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="payment-section" style="margin-top: 3rem">
+        <h3>Select Payment Method</h3>
+        <div
+          class="payment-buttons"
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+          "
+        >
+          <button class="pay-btn">💳 Card</button>
+          <button class="pay-btn">🅿️ PayPal</button>
+          <button class="pay-btn">₿ Crypto</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script src="js/cart.js"></script>
+  </body>
+</html>

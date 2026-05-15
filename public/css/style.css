@@ -78,8 +78,23 @@ nav {
 }
 
 /* THEME BUTTON */
-#theme-toggle { display: flex; align-items: center; justify-content: center; cursor: pointer; background: transparent; color: var(--color-secondary); border: 1px solid rgba(128,128,128,0.2); border-radius: 50%; width: 40px; height: 40px; transition: var(--transition); }
-#theme-toggle:hover { border-color: var(--color-tertiary); transform: rotate(15deg); }
+#theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-secondary);
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  transition: var(--transition);
+}
+#theme-toggle:hover {
+  border-color: var(--color-tertiary);
+  transform: rotate(15deg);
+}
 
 /* BUTTON */
 .cta-button {
@@ -98,9 +113,22 @@ nav {
 }
 
 /* HERO */
-.hero { height: 85vh; display: flex; align-items: center; justify-content: center; text-align: center; }
-.hero-content h1 { font-size: clamp(2.5rem, 8vw, 4.8rem); line-height: 1.05; margin-bottom: 2.5rem; font-weight: 900; }
-.hero-content span { color: var(--color-tertiary); }
+.hero {
+  height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.hero-content h1 {
+  font-size: clamp(2.5rem, 8vw, 4.8rem);
+  line-height: 1.05;
+  margin-bottom: 2.5rem;
+  font-weight: 900;
+}
+.hero-content span {
+  color: var(--color-tertiary);
+}
 
 /* OVERLAY */
 .overlay {
@@ -188,10 +216,12 @@ nav {
   font-family: inherit;
 }
 
-.tab-btn.active { opacity: 1; }
+.tab-btn.active {
+  opacity: 1;
+}
 
 .tab-btn.active::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -200,9 +230,17 @@ nav {
   background: var(--color-tertiary);
 }
 
-.profile-header { margin-bottom: 2rem; text-align: left; }
-.profile-header h2 { font-size: 2rem; margin-bottom: 0.2rem; }
-.profile-header p { opacity: 0.6; }
+.profile-header {
+  margin-bottom: 2rem;
+  text-align: left;
+}
+.profile-header h2 {
+  font-size: 2rem;
+  margin-bottom: 0.2rem;
+}
+.profile-header p {
+  opacity: 0.6;
+}
 
 .order-card {
   background: rgba(128, 128, 128, 0.05);
@@ -219,4 +257,215 @@ nav {
   font-size: 0.8rem;
   opacity: 0.6;
   margin-bottom: 0.5rem;
+}
+
+/* ================================= 
+   CART PAGE SPECIFIC STYLES 
+   ================================= */
+
+/* 1. Expand the card for the cart view */
+.cart-wrapper {
+  max-width: 800px !important; /* Make it wider than the login card */
+}
+
+/* 2. Individual Build Cards */
+.cart-build-item {
+  background: rgba(128, 128, 128, 0.08);
+  border: 1px solid rgba(128, 128, 128, 0.15);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.build-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 900;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+}
+
+.remove-btn {
+  background: transparent;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.remove-btn:hover {
+  background: var(--color-accent);
+  color: white;
+}
+
+.part-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  padding: 0.3rem 0;
+}
+
+.part-price {
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.build-subtotal {
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed rgba(128, 128, 128, 0.2);
+  text-align: right;
+  font-weight: 900;
+  color: var(--color-tertiary);
+}
+
+/* 3. Grand Total Section */
+.cart-grand-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  border-radius: 12px;
+  margin: 2rem 0;
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+/* 4. Shipping & Payment Sections */
+.shipping-section {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(128, 128, 128, 0.1);
+}
+
+.payment-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.pay-btn {
+  background: rgba(128, 128, 128, 0.1);
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  color: var(--color-secondary);
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.pay-btn:hover {
+  border-color: var(--color-tertiary);
+  background: rgba(128, 128, 128, 0.15);
+}
+/* CART STYLES */
+.cart-wrapper {
+  max-width: 850px !important;
+  margin: 3rem auto !important;
+}
+
+.cart-build-item {
+  background: rgba(128, 128, 128, 0.05);
+  border: 1px solid rgba(128, 128, 128, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.build-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 900;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.cart-grand-total {
+  display: flex;
+  justify-content: space-between;
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  padding: 1.5rem;
+  border-radius: 12px;
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin: 2rem 0;
+}
+
+/* ADDRESS SECTION */
+.address-box {
+  background: rgba(128, 128, 128, 0.03);
+  border: 1px dashed rgba(128, 128, 128, 0.2);
+  padding: 1.5rem;
+  border-radius: 10px;
+  line-height: 1.6;
+}
+
+.pay-btn {
+  background: transparent;
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  color: inherit;
+  padding: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.pay-btn:hover {
+  border-color: var(--color-tertiary);
+  background: rgba(10, 92, 19, 0.05);
+}
+.cart-wrapper {
+  max-width: 850px !important;
+  margin: 3rem auto !important;
+}
+
+.address-box {
+  background: rgba(128, 128, 128, 0.03);
+  border: 1px dashed rgba(128, 128, 128, 0.2);
+  padding: 1.5rem;
+  border-radius: 10px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.cart-grand-total {
+  display: flex;
+  justify-content: space-between;
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  padding: 1.5rem;
+  border-radius: 12px;
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin: 2rem 0;
+}
+
+.pay-btn {
+  background: transparent;
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  color: inherit;
+  padding: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.pay-btn:hover {
+  border-color: var(--color-tertiary);
+  background: rgba(10, 92, 19, 0.05);
 }
