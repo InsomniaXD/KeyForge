@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keyforge-app-deployment
+spec:
+  selector:
+    matchLabels:
+      app: keyforge-app
+  template:
+    metadata:
+      labels:
+        app: keyforge-app
+    spec:
+      containers:
+      - name: keyforge-app
+        image: keyforge-app:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: db-host
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: mysql-root-password
+        - name: DB_NAME
+          value: "keyforge"
