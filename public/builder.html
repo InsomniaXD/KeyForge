@@ -11,13 +11,13 @@
       rel="stylesheet"
     />
   </head>
-  <script>
-    // Instantly apply dark theme before body paints to prevent flashing
-    if (localStorage.getItem("theme") === "dark") {
-      document.documentElement.classList.add("dark"); // Or document.body below
-    }
-  </script>
   <body>
+    <script>
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+      }
+    </script>
+    
     <nav>
       <div class="nav-left">
         <a href="index.html" class="logo-link">

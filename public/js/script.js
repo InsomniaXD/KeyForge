@@ -13,24 +13,20 @@ function updateThemeUI() {
   themeIcon.innerHTML = body.classList.contains("dark") ? sunIcon : moonIcon;
 }
 
-if (localStorage.getItem("theme") === "dark") {
-  body.classList.add("dark");
-}
+// Load Theme
+if (localStorage.getItem("theme") === "dark") { body.classList.add("dark"); }
 updateThemeUI();
 
 if (themeToggle) {
   themeToggle.addEventListener("click", () => {
     body.classList.toggle("dark");
-    localStorage.setItem(
-      "theme",
-      body.classList.contains("dark") ? "dark" : "light",
-    );
+    localStorage.setItem("theme", body.classList.contains("dark") ? "dark" : "light");
     updateThemeUI();
   });
 }
 
 /// ===============================
-/// AUTH SYNC (NAVBAR)
+/// AUTH SYNC (NAVBAR UPDATES)
 /// ===============================
 function syncAuthStatus() {
   const user = localStorage.getItem("loggedInUser");
@@ -39,6 +35,54 @@ function syncAuthStatus() {
     accountLink.textContent = "Account";
     accountLink.href = "account.html";
   }
+}
+
+/// ===============================
+/// DATABASE: SAVE ORDER
+/// ===============================
+async function saveOrder(order) {
+  const email = localStorage.getItem("loggedInUser");
+  if (!email) { alert("Please log in to save your build."); return; }
+
+  const fullOrder = {
+    ...order,
+    userEmail: email,
+    date: new Date().toLocaleDateString(),
+    id: Math.floor(Math.random() * 90000) + 10000
+  };
+
+  try {
+    const res = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(fullOrder)
+    });
+    if (res.ok) console.log("Database updated.");
+  } catch (err) {
+    console.warn("DB offline. Saving to browser cache.");
+    const orders = JSON.parse(localStorage.getItem("kf_user_orders") || "[]");
+    orders.push(fullOrder);
+    localStorage.setItem("kf_user_orders", JSON.stringify(orders));
+  }
+}
+
+/// ===============================
+/// OVERLAYS
+/// ===============================
+function openOverlay(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = "flex";
+}
+
+function closeOverlay(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = "none";
+}
+
+function placeOrder(build) {
+  saveOrder(build);
+  closeOverlay("checkout-overlay");
+  openOverlay("success-overlay");
 }
 
 document.addEventListener("DOMContentLoaded", syncAuthStatus);

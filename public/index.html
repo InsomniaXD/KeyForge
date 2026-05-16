@@ -12,6 +12,12 @@
     />
   </head>
   <body>
+    <script>
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+      }
+    </script>
+    
     <div class="page-transition-overlay" id="transition-curtain"></div>
 
     <nav>
