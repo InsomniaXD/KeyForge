@@ -84,43 +84,39 @@ function getNextOrderId(callback) {
   );
 }
 
-// Convert Cart to Finalized Orders
+// Convert Cart to Finalized Orders (FIXED: Unified grouping)
 app.post("/api/checkout", (req, res) => {
   const { userEmail, items, shipping, paymentMethod } = req.body;
   if (!userEmail || !items || !items.length) {
     return res.status(400).json({ error: "Invalid checkout payload" });
   }
 
-  let processed = 0;
-  let errors = false;
+  // Calculate combined total price for all keyboard builds in this session
+  const combinedTotal = items.reduce(
+    (sum, item) => sum + (Number(item.totalPrice) || 0),
+    0,
+  );
 
-  // Process every keyboard built in the cart
-  items.forEach((item) => {
-    getNextOrderId((seq) => {
-      const orderDoc = {
-        displayId: seq, // Saved as raw integer, formatting handled on frontend
-        userEmail,
-        date: new Date().toLocaleDateString(),
-        case: item.case,
-        switch: item.switch,
-        keycaps: item.keycaps,
-        mods: item.mods || [],
-        totalPrice: item.totalPrice,
-        shipping: shipping || null,
-        paymentMethod: paymentMethod,
-      };
+  // Request a single safe order ID sequence from counters database
+  getNextOrderId((seq) => {
+    const orderDoc = {
+      displayId: seq,
+      userEmail,
+      date: new Date().toLocaleDateString(),
+      items: items, // Groups all builds into a single array inside this single document
+      totalPrice: combinedTotal,
+      shipping: shipping || null,
+      paymentMethod: paymentMethod,
+    };
 
-      ordersDB.insert(orderDoc, (err) => {
-        if (err) errors = true;
-        processed++;
-        if (processed === items.length) {
-          if (errors)
-            return res
-              .status(500)
-              .json({ error: "Some items failed to process." });
-          res.json({ success: true });
-        }
-      });
+    // Insert only ONE single order record for the entire checkout session
+    ordersDB.insert(orderDoc, (err) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Failed to process order checkout." });
+      }
+      res.json({ success: true });
     });
   });
 });

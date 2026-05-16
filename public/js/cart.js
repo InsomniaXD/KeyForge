@@ -90,34 +90,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- CHECKOUT & PAYMENT FLOW ---
   document.querySelectorAll(".pay-btn").forEach((btn) => {
     btn.addEventListener("click", async (e) => {
-      // Do nothing if the cart is empty
-      if (cart.length === 0) return;
+      if (cart.length === 0) {
+        alert("No keyboard build in cart.");
+        return;
+      }
 
       const shippingAddress = JSON.parse(localStorage.getItem(ADDRESS_KEY));
       const paymentMethod = e.target.textContent.trim();
       let checkoutUrl = "account.html";
-
-      // Calculate combined grand total
       const grandTotal = cart.reduce((sum, item) => sum + item.totalPrice, 0);
 
-      // Fetch existing local orders to generate a sequential display ID
-      let allOrders = JSON.parse(localStorage.getItem("kf_orders") || "[]");
-      const nextDisplayId = allOrders.length > 0 ? (parseInt(allOrders[allOrders.length - 1].displayId) + 1) : 1;
-
-      // Create ONE order object containing all items
-      const newOrder = {
-        id: generateSafeId(),
-        displayId: nextDisplayId,
-        userEmail: userEmail,
-        items: cart, // The array of builds
-        totalPrice: grandTotal,
-        shipping: shippingAddress,
-        paymentMethod: paymentMethod,
-        date: new Date().toLocaleDateString()
-      };
-
       try {
-        // 1. Process the checkout behind the scenes
         const response = await fetch("/api/checkout", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -128,38 +111,37 @@ document.addEventListener("DOMContentLoaded", () => {
             paymentMethod,
           }),
         });
-
-        if (!response.ok) throw new Error("Server error during checkout");
-
+        if (!response.ok) throw new Error();
       } catch (err) {
-        console.warn("Backend unavailable, saving order locally instead.");
-        
-        // 🚨 FIX: Fallback to local storage
         let allOrders = JSON.parse(localStorage.getItem("kf_orders") || "[]");
-        const nextId = allOrders.length > 0 ? (parseInt(allOrders[allOrders.length - 1].displayId || allOrders.length) + 1) : 1;
-        
+        const nextDisplayId =
+          allOrders.length > 0
+            ? parseInt(
+                allOrders[allOrders.length - 1].displayId || allOrders.length,
+              ) + 1
+            : 1;
+
         const newOrder = {
-          id: `kf_${Date.now()}`,
-          displayId: nextId,
+          id: generateSafeId(),
+          displayId: nextDisplayId,
           userEmail: userEmail,
           items: cart,
-          totalPrice: cart.reduce((sum, item) => sum + item.totalPrice, 0),
-          date: new Date().toLocaleDateString()
+          totalPrice: grandTotal,
+          paymentMethod: paymentMethod,
+          shippingAddress: shippingAddress,
+          date: new Date().toLocaleDateString(),
         };
-        
+
         allOrders.push(newOrder);
         localStorage.setItem("kf_orders", JSON.stringify(allOrders));
       } finally {
-        // 2. Clear the cart
         localStorage.removeItem(CART_KEY);
-        // 3. Redirect the user
         window.location.href = checkoutUrl;
       }
     });
   });
+});
 
-// Note: Ensure generateSafeId() exists in cart.js, or copy it from builder.js if missing.
-// Helper to generate IDs if not present in cart.js:
 function generateSafeId() {
   return window.crypto && crypto.randomUUID
     ? crypto.randomUUID()
@@ -177,4 +159,4 @@ function removeFromCart(id) {
     JSON.stringify(cart.filter((item) => item.id !== id)),
   );
   window.location.reload();
-}});
+}
