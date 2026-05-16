@@ -5,23 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KeyForge | Account</title>
     <link rel="stylesheet" href="css/style.css" />
-<<<<<<< HEAD
-    <link rel="stylesheet" href="css/builder.css" />
-=======
     <link rel="stylesheet" href="css/account.css" />
->>>>>>> 4ed84653267e76fe6906b7be72889252d48b41f6
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap"
       rel="stylesheet"
     />
-<<<<<<< HEAD
-    <script>
-      if (localStorage.getItem("theme") === "dark")
-        document.documentElement.classList.add("dark");
-    </script>
-  </head>
-  <body>
-=======
   </head>
   <body>
     <script>
@@ -30,24 +18,23 @@
       }
     </script>
     
->>>>>>> 4ed84653267e76fe6906b7be72889252d48b41f6
     <nav>
       <div class="nav-left">
-        <a href="index.html" class="logo-link"
-          ><div class="logo">KEY<span>FORGE</span></div></a
-        >
+        <a href="index.html" class="logo-link">
+          <div class="logo">KEY<span>FORGE</span></div>
+        </a>
         <div class="nav-links">
-          <a href="builder.html">Build</a>
-<<<<<<< HEAD
-          <a href="account.html" class="active">Orders</a>
-=======
-          <a href="account.html">Orders</a>
->>>>>>> 4ed84653267e76fe6906b7be72889252d48b41f6
+          <a href="about.html">About</a>
         </div>
       </div>
       <div class="nav-right">
         <div class="nav-links">
-          <a href="about.html">About</a>
+          <a href="builder.html" class="nav-build-link">Build</a>
+          <a
+            href="cart.html"
+            id="cart-link"
+            style="color: var(--color-tertiary); font-weight: 900"
+            >Cart (0)</a>
           <a href="account.html" id="account-link">Login</a>
         </div>
         <div class="nav-separator"></div>
@@ -68,7 +55,6 @@
       </div>
     </nav>
 
-<<<<<<< HEAD
     <div
       id="auth-alert"
       style="
@@ -102,32 +88,11 @@
         <a href="#" id="show-signup" style="color: var(--color-tertiary)"
           >Create one</a
         >
-=======
-    <div id="login-section" class="account-card">
-      <h1>Welcome Back</h1>
-      <form id="login-form">
-        <div class="input-group">
-          <label>Email Address</label>
-          <input type="email" id="login-email" required />
-        </div>
-        <div class="input-group">
-          <label>Password</label>
-          <input type="password" id="login-password" required />
-        </div>
-        <button type="submit" class="cta-button signup-btn-full">
-          Login
-        </button>
-      </form>
-      <p class="account-switch-text">
-        No account?
-        <a href="#" id="show-signup" class="tertiary-link">Create one</a>
->>>>>>> 4ed84653267e76fe6906b7be72889252d48b41f6
       </p>
     </div>
 
     <div id="signup-section" class="account-card" style="display: none">
       <h1>Create Account</h1>
-<<<<<<< HEAD
       <div class="signup-grid">
         <div class="input-group">
           <label>First Name</label>
@@ -453,77 +418,3 @@
     </script>
   </body>
 </html>
-=======
-      <form id="signup-form">
-        <div class="signup-grid">
-          <div class="input-group">
-            <label>First Name</label>
-            <input type="text" id="signup-firstname" required />
-          </div>
-          <div class="input-group">
-            <label>Last Name</label>
-            <input type="text" id="signup-lastname" required />
-          </div>
-        </div>
-        <div class="input-group">
-          <label>Email Address</label>
-          <input type="email" id="signup-email" required />
-        </div>
-        <div class="input-group">
-          <label>Password</label>
-          <input type="password" id="signup-password" required />
-        </div>
-        <button type="submit" class="cta-button signup-btn-full">
-          Sign Up
-        </button>
-      </form>
-      <p class="account-switch-text">
-        Already have an account?
-        <a href="#" id="show-login" class="tertiary-link">Login</a>
-      </p>
-    </div>
-
-    <div id="account-section" class="account-card wide-card" style="display: none">
-      <div class="profile-header">
-        <h2 id="p-full-name">User Name</h2>
-        <p id="p-email">user@example.com</p>
-      </div>
-
-      <div class="tab-container">
-        <button class="tab-btn active" id="tab-btn-history">
-          Order History
-        </button>
-        <button class="tab-btn" id="tab-btn-settings">
-          Settings
-        </button>
-        <button id="logout-btn">
-          Logout
-        </button>
-      </div>
-
-      <div id="tab-history">
-        <div id="orders-list"></div>
-      </div>
-
-      <div id="tab-settings" style="display: none">
-        <form id="edit-profile-form">
-          <div class="signup-grid">
-            <div class="input-group">
-              <label>First Name</label>
-              <input type="text" id="edit-firstname" required />
-            </div>
-            <div class="input-group">
-              <label>Last Name</label>
-              <input type="text" id="edit-lastname" required />
-            </div>
-          </div>
-          <button type="submit" class="cta-button">Save Changes</button>
-        </form>
-      </div>
-    </div>
-
-    <script src="js/script.js"></script>
-    <script src="js/account.js"></script>
-  </body>
-</html>
->>>>>>> 4ed84653267e76fe6906b7be72889252d48b41f6
