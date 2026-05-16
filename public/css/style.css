@@ -98,14 +98,30 @@ nav {
 }
 
 /* HERO */
-.hero { height: 85vh; display: flex; align-items: center; justify-content: center; text-align: center; }
-.hero-content h1 { font-size: clamp(2.5rem, 8vw, 4.8rem); line-height: 1.05; margin-bottom: 2.5rem; font-weight: 900; }
-.hero-content span { color: var(--color-tertiary); }a:root {
-    --color-primary: #eff4d9;
-    --color-secondary: #181a13;
-    --color-tertiary: #0a5c13;
-    --color-accent: #5c0f0a;
-    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+.hero { 
+  height: 85vh; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  text-align: center; 
+  
+  /* Adds your image with a subtle dark overlay so text stays readable */
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://en.akkogear.com/wp-content/uploads/2023/06/cropped-3.jpg'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero-content h1 { 
+  font-size: clamp(2.5rem, 8vw, 4.8rem); 
+  line-height: 1.05; 
+  margin-bottom: 2.5rem; 
+  font-weight: 900; 
+  color: #eff4d9; /* Forces text to stay light/readable over a dark image background */
+}
+
+.hero-content span { 
+  color: var(--color-tertiary); 
 }
 
 /* OVERLAY */
