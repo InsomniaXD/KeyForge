@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KeyForge | About</title>
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/about.css" />
     <link rel="stylesheet" href="css/builder.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap"
@@ -24,14 +24,17 @@
           <div class="logo">KEY<span>FORGE</span></div>
         </a>
         <div class="nav-links">
-          <a href="builder.html" class="nav-build-link">Build</a>
-          <a href="#">Orders</a>
+          <a href="about.html">About</a>
         </div>
       </div>
       <div class="nav-right">
         <div class="nav-links">
-          <a href="about.html">About</a>
-          <a href="#">Support</a>
+          <a href="builder.html" class="nav-build-link">Build</a>
+          <a
+            href="cart.html"
+            id="cart-link"
+            style="color: var(--color-tertiary); font-weight: 900"
+            >Cart (0)</a>
           <a href="account.html" id="account-link">Login</a>
         </div>
         <div class="nav-separator"></div>
@@ -57,11 +60,12 @@
         <h1>Crafted for <span>Enthusiasts.</span></h1>
         <p
           style="
-            max-width: 600px;
+            max-width: 750px;
             margin: 0 auto 2rem;
             opacity: 0.8;
             line-height: 1.6;
             color: #eff4d9;
+            font-size: clamp(1.25rem, 3vw, 1.15rem); 
           "
         >
           KeyForge was born from a desire to make premium mechanical keyboards

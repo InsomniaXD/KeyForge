@@ -127,16 +127,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     list.innerHTML = myOrders
       .reverse()
-      .map(
-        (o) => `
+      .map((o) => {
+        const formattedId = String(o.displayId || o.id || "1").padStart(7, "0");
+        
+        const itemsHtml = o.items.map((item, idx) => `
+          <div style="margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px dashed rgba(128,128,128,0.2); text-align: left;">
+              <p><strong>Build ${idx + 1}: ${item.case.name}</strong></p>
+              <p class="order-card-switch-caps">${item.switch.name} • ${item.keycaps.name}</p>
+          </div>
+        `).join("");
+
+        return `
             <div class="order-card">
-                <div class="order-meta"><span>ID: #${o.id}</span><span>${o.date}</span></div>
-                <p><strong>${o.case.name}</strong></p>
-                <p class="order-card-switch-caps">${o.switch.name} • ${o.keycaps.name}</p>
-                <p class="order-card-total">${o.total}</p>
+                <div class="order-meta">
+                  <span style="font-weight: 900; color: var(--color-tertiary);">Order: #${formattedId}</span>
+                  <span>${o.date || ""}</span>
+                </div>
+                ${itemsHtml}
+                <p class="order-card-total" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,0.2); text-align: right; font-size: 1.1rem;">
+                  Grand Total: £${(o.totalPrice || 0).toFixed(2)}
+                </p>
             </div>
-        `
-      )
+        `;
+      })
       .join("");
   }
 

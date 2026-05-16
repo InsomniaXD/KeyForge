@@ -5,23 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KeyForge | Account</title>
     <link rel="stylesheet" href="css/style.css" />
-<<<<<<< HEAD
-    <link rel="stylesheet" href="css/builder.css" />
-=======
     <link rel="stylesheet" href="css/account.css" />
->>>>>>> 4ed84653267e76fe6906b7be72889252d48b41f6
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap"
       rel="stylesheet"
     />
-<<<<<<< HEAD
-    <script>
-      if (localStorage.getItem("theme") === "dark")
-        document.documentElement.classList.add("dark");
-    </script>
-  </head>
-  <body>
-=======
   </head>
   <body>
     <script>
@@ -30,24 +18,23 @@
       }
     </script>
     
->>>>>>> 4ed84653267e76fe6906b7be72889252d48b41f6
     <nav>
       <div class="nav-left">
-        <a href="index.html" class="logo-link"
-          ><div class="logo">KEY<span>FORGE</span></div></a
-        >
+        <a href="index.html" class="logo-link">
+          <div class="logo">KEY<span>FORGE</span></div>
+        </a>
         <div class="nav-links">
-          <a href="builder.html">Build</a>
-<<<<<<< HEAD
-          <a href="account.html" class="active">Orders</a>
-=======
-          <a href="account.html">Orders</a>
->>>>>>> 4ed84653267e76fe6906b7be72889252d48b41f6
+          <a href="about.html">About</a>
         </div>
       </div>
       <div class="nav-right">
         <div class="nav-links">
-          <a href="about.html">About</a>
+          <a href="builder.html" class="nav-build-link">Build</a>
+          <a
+            href="cart.html"
+            id="cart-link"
+            style="color: var(--color-tertiary); font-weight: 900"
+            >Cart (0)</a>
           <a href="account.html" id="account-link">Login</a>
         </div>
         <div class="nav-separator"></div>
@@ -68,7 +55,6 @@
       </div>
     </nav>
 
-<<<<<<< HEAD
     <div
       id="auth-alert"
       style="
@@ -102,32 +88,11 @@
         <a href="#" id="show-signup" style="color: var(--color-tertiary)"
           >Create one</a
         >
-=======
-    <div id="login-section" class="account-card">
-      <h1>Welcome Back</h1>
-      <form id="login-form">
-        <div class="input-group">
-          <label>Email Address</label>
-          <input type="email" id="login-email" required />
-        </div>
-        <div class="input-group">
-          <label>Password</label>
-          <input type="password" id="login-password" required />
-        </div>
-        <button type="submit" class="cta-button signup-btn-full">
-          Login
-        </button>
-      </form>
-      <p class="account-switch-text">
-        No account?
-        <a href="#" id="show-signup" class="tertiary-link">Create one</a>
->>>>>>> 4ed84653267e76fe6906b7be72889252d48b41f6
       </p>
     </div>
 
     <div id="signup-section" class="account-card" style="display: none">
       <h1>Create Account</h1>
-<<<<<<< HEAD
       <div class="signup-grid">
         <div class="input-group">
           <label>First Name</label>
@@ -352,20 +317,20 @@
         renderOrders();
       }
 
-      // ── ORDERS ───────────────────────────────────────────
+ // ── ORDERS ───────────────────────────────────────────
       async function renderOrders() {
         const list = document.getElementById("orders-list");
         const email = localStorage.getItem("loggedInUser");
         let myOrders = [];
+        
         try {
-          const res = await fetch(
-            `/api/orders?email=${encodeURIComponent(email)}`,
-          );
+          const res = await fetch(`/api/orders?email=${encodeURIComponent(email)}`);
           if (!res.ok) throw new Error();
           myOrders = await res.json();
         } catch {
-          list.innerHTML = `<p style="opacity:0.5; color:red;">Could not connect to database.</p>`;
-          return;
+          // 🚨 FIX: Read from local storage instead of showing an error
+          const allOrders = JSON.parse(localStorage.getItem("kf_orders") || "[]");
+          myOrders = allOrders.filter(o => o.userEmail === email);
         }
 
         if (!myOrders.length) {
@@ -376,25 +341,36 @@
         list.innerHTML = [...myOrders]
           .reverse() // Show newest first
           .map((o) => {
-            // Formats the integer 1 into "0000001"
-            const formattedId = String(o.displayId || o._id).padStart(7, "0");
+            const formattedId = String(o.displayId || o.id || "1").padStart(7, "0");
 
-            // Extract mod names for display
-            const modsHtml =
-              o.mods && o.mods.length > 0
-                ? o.mods.map((m) => m.name).join(", ")
+            // Loop through nested cart items for this specific order
+            const itemsHtml = o.items.map((item, idx) => {
+              const modsHtml = item.mods && item.mods.length > 0
+                ? item.mods.map((m) => m.name).join(", ")
                 : "No additional mods";
+
+              return `
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed rgba(128,128,128,0.1);">
+                    <p style="margin-bottom: 0.3rem;"><strong>Build ${idx + 1}: ${item.case.name}</strong></p>
+                    <p style="font-size:0.85rem;opacity:0.7; margin-bottom: 0.2rem;">Switch: ${item.switch.name} &bull; Keycaps: ${item.keycaps.name}</p>
+                    <p style="font-size:0.85rem;opacity:0.9; color: var(--color-tertiary);">Mods: ${modsHtml}</p>
+                </div>
+              `;
+            }).join("");
 
             return `
                 <div class="order-card" style="margin-bottom: 1.5rem; background: rgba(128,128,128,0.05); padding: 1.5rem; border-radius: 8px;">
                     <div class="order-meta" style="display:flex; justify-content:space-between; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(128,128,128,0.1); padding-bottom: 0.5rem;">
                         <span style="font-weight: 900; color: var(--color-tertiary);">Order #${formattedId}</span>
-                        <span style="opacity: 0.6; font-size: 0.85rem;">${o.date}</span>
+                        <span style="opacity: 0.6; font-size: 0.85rem;">${o.date || "Just now"} &bull; ${o.paymentMethod || "Card"}</span>
                     </div>
-                    <p style="margin-bottom: 0.3rem;"><strong>Kit: ${o.case.name}</strong></p>
-                    <p style="font-size:0.85rem;opacity:0.7; margin-bottom: 0.2rem;">Switch: ${o.switch.name} &bull; Keycaps: ${o.keycaps.name}</p>
-                    <p style="font-size:0.85rem;opacity:0.9; color: var(--color-tertiary);">Mods: ${modsHtml}</p>
-                    <p style="margin-top:0.8rem; font-weight:900; font-size: 1.1rem;">Total: £${o.totalPrice.toFixed(2)}</p>
+                    
+                    ${itemsHtml}
+
+                    <div style="margin-top:1.5rem; padding-top:1rem; border-top: 1px solid rgba(128,128,128,0.2); display: flex; justify-content: space-between; align-items: center;">
+                      <span style="font-size: 0.9rem; opacity: 0.7;">${o.items.length} Items</span>
+                      <span style="font-weight:900; font-size: 1.2rem; color: var(--color-tertiary);">Grand Total: £${(o.totalPrice || 0).toFixed(2)}</span>
+                    </div>
                 </div>
             `;
           })
@@ -453,77 +429,3 @@
     </script>
   </body>
 </html>
-=======
-      <form id="signup-form">
-        <div class="signup-grid">
-          <div class="input-group">
-            <label>First Name</label>
-            <input type="text" id="signup-firstname" required />
-          </div>
-          <div class="input-group">
-            <label>Last Name</label>
-            <input type="text" id="signup-lastname" required />
-          </div>
-        </div>
-        <div class="input-group">
-          <label>Email Address</label>
-          <input type="email" id="signup-email" required />
-        </div>
-        <div class="input-group">
-          <label>Password</label>
-          <input type="password" id="signup-password" required />
-        </div>
-        <button type="submit" class="cta-button signup-btn-full">
-          Sign Up
-        </button>
-      </form>
-      <p class="account-switch-text">
-        Already have an account?
-        <a href="#" id="show-login" class="tertiary-link">Login</a>
-      </p>
-    </div>
-
-    <div id="account-section" class="account-card wide-card" style="display: none">
-      <div class="profile-header">
-        <h2 id="p-full-name">User Name</h2>
-        <p id="p-email">user@example.com</p>
-      </div>
-
-      <div class="tab-container">
-        <button class="tab-btn active" id="tab-btn-history">
-          Order History
-        </button>
-        <button class="tab-btn" id="tab-btn-settings">
-          Settings
-        </button>
-        <button id="logout-btn">
-          Logout
-        </button>
-      </div>
-
-      <div id="tab-history">
-        <div id="orders-list"></div>
-      </div>
-
-      <div id="tab-settings" style="display: none">
-        <form id="edit-profile-form">
-          <div class="signup-grid">
-            <div class="input-group">
-              <label>First Name</label>
-              <input type="text" id="edit-firstname" required />
-            </div>
-            <div class="input-group">
-              <label>Last Name</label>
-              <input type="text" id="edit-lastname" required />
-            </div>
-          </div>
-          <button type="submit" class="cta-button">Save Changes</button>
-        </form>
-      </div>
-    </div>
-
-    <script src="js/script.js"></script>
-    <script src="js/account.js"></script>
-  </body>
-</html>
->>>>>>> 4ed84653267e76fe6906b7be72889252d48b41f6
