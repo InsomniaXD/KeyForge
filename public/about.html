@@ -12,6 +12,12 @@
     />
   </head>
   <body>
+    <script>
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+      }
+    </script>
+    
     <nav>
       <div class="nav-left">
         <a href="index.html" class="logo-link">
@@ -55,6 +61,7 @@
             margin: 0 auto 2rem;
             opacity: 0.8;
             line-height: 1.6;
+            color: #eff4d9;
           "
         >
           KeyForge was born from a desire to make premium mechanical keyboards

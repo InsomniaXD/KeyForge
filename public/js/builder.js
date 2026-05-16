@@ -11,17 +11,11 @@ const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></pa
 
 function updateThemeUI() {
   if (!themeIcon) return;
-  if (body.classList.contains("dark")) {
-    themeIcon.innerHTML = sunIcon;
-  } else {
-    themeIcon.innerHTML = moonIcon;
-  }
+  themeIcon.innerHTML = body.classList.contains("dark") ? sunIcon : moonIcon;
 }
 
 if (localStorage.getItem("theme") === "dark") {
   body.classList.add("dark");
-} else {
-  body.classList.remove("dark");
 }
 updateThemeUI();
 
@@ -37,7 +31,12 @@ if (themeToggle) {
 }
 
 /// ===============================
-/// AUTH SYNC & HELPERS
+/// AUTH SYNC
+/// ===============================
+// Leave everything below this line unchanged...
+
+/// ===============================
+/// AUTH SYNC
 /// ===============================
 function syncAuthStatus() {
   const user = localStorage.getItem("loggedInUser");

@@ -24,6 +24,12 @@
     </script>
   </head>
   <body>
+    <script>
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+      }
+    </script>
+    
     <nav>
       <div class="nav-left">
         <a href="index.html" class="logo-link">
