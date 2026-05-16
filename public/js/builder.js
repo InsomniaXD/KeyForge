@@ -1,7 +1,7 @@
 /// ===============================
 /// THEME SYSTEM
 /// ===============================
-let products = [];
+let products = []; // Preserved for catalog data sync
 const themeToggle = document.getElementById("theme-toggle");
 const themeIcon = document.getElementById("theme-icon");
 const body = document.body;
@@ -11,11 +11,18 @@ const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></pa
 
 function updateThemeUI() {
   if (!themeIcon) return;
-  themeIcon.innerHTML = body.classList.contains("dark") ? sunIcon : moonIcon;
+  if (body.classList.contains("dark")) {
+    themeIcon.innerHTML = sunIcon;
+  } else {
+    themeIcon.innerHTML = moonIcon;
+  }
 }
 
+// Apply active theme state on page initialization
 if (localStorage.getItem("theme") === "dark") {
   body.classList.add("dark");
+} else {
+  body.classList.remove("dark");
 }
 updateThemeUI();
 
@@ -29,6 +36,11 @@ if (themeToggle) {
     updateThemeUI();
   });
 }
+
+/// ===============================
+/// AUTH SYNC
+/// ===============================
+// Leave everything below this line unchanged...
 
 /// ===============================
 /// AUTH SYNC

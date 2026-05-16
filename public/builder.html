@@ -11,7 +11,12 @@
       rel="stylesheet"
     />
   </head>
-
+  <script>
+    // Instantly apply dark theme before body paints to prevent flashing
+    if (localStorage.getItem("theme") === "dark") {
+      document.documentElement.classList.add("dark"); // Or document.body below
+    }
+  </script>
   <body>
     <nav>
       <div class="nav-left">
@@ -131,13 +136,6 @@
           <span id="total-price">£0.00</span>
         </div>
 
-        <button
-          id="checkout-btn"
-          class="cta-button"
-          style="width: 100%; margin-bottom: 0.8rem; border-radius: 8px"
-        >
-          Checkout
-        </button>
         <button
           id="clear-build-btn"
           class="clear-btn"
