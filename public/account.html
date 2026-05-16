@@ -1,271 +1,414 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KeyForge | Account</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/builder.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      if (localStorage.getItem("theme") === "dark")
+        document.documentElement.classList.add("dark");
+    </script>
+  </head>
+  <body>
     <nav>
-        <div class="nav-left">
-            <a href="index.html" class="logo-link"><div class="logo">KEY<span>FORGE</span></div></a>
-            <div class="nav-links">
-                <a href="builder.html">Build</a>
-                <a href="account.html">Orders</a>
-            </div>
+      <div class="nav-left">
+        <a href="index.html" class="logo-link"
+          ><div class="logo">KEY<span>FORGE</span></div></a
+        >
+        <div class="nav-links">
+          <a href="builder.html">Build</a>
+          <a href="account.html" class="active">Orders</a>
         </div>
-        <div class="nav-right">
-            <div class="nav-links">
-                <a href="about.html">About</a>
-                <a href="account.html" id="account-link">Login</a>
-            </div>
-            <div class="nav-separator"></div>
-            <button id="theme-toggle" aria-label="Toggle Dark Mode">
-                <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
-            </button>
+      </div>
+      <div class="nav-right">
+        <div class="nav-links">
+          <a href="about.html">About</a>
+          <a href="account.html" id="account-link">Login</a>
         </div>
+        <div class="nav-separator"></div>
+        <button id="theme-toggle" aria-label="Toggle Dark Mode">
+          <svg
+            id="theme-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ></svg>
+        </button>
+      </div>
     </nav>
 
-    <!-- LOGIN -->
+    <div
+      id="auth-alert"
+      style="
+        display: none;
+        background: #ffeb3b;
+        color: #000;
+        text-align: center;
+        padding: 10px;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      "
+    >
+      You must be logged in to access that page.
+    </div>
+
     <div id="login-section" class="account-card">
-        <h1>Welcome Back</h1>
-        <div class="input-group">
-            <label>Email Address</label>
-            <input type="email" id="login-email">
-        </div>
-        <div class="input-group">
-            <label>Password</label>
-            <input type="password" id="login-password">
-        </div>
-        <button class="cta-button" style="width:100%;" id="login-btn">Login</button>
-        <p style="margin-top:1.5rem;font-size:0.9rem;">No account? <a href="#" id="show-signup" style="color:var(--color-tertiary);">Create one</a></p>
+      <h1>Welcome Back</h1>
+      <div class="input-group">
+        <label>Email Address</label>
+        <input type="email" id="login-email" />
+      </div>
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="login-password" />
+      </div>
+      <button class="cta-button" style="width: 100%" id="login-btn">
+        Login
+      </button>
+      <p style="margin-top: 1.5rem; font-size: 0.9rem">
+        No account?
+        <a href="#" id="show-signup" style="color: var(--color-tertiary)"
+          >Create one</a
+        >
+      </p>
     </div>
 
-    <!-- SIGNUP -->
-    <div id="signup-section" class="account-card" style="display:none;">
-        <h1>Create Account</h1>
+    <div id="signup-section" class="account-card" style="display: none">
+      <h1>Create Account</h1>
+      <div class="signup-grid">
+        <div class="input-group">
+          <label>First Name</label>
+          <input type="text" id="signup-firstname" />
+        </div>
+        <div class="input-group">
+          <label>Last Name</label>
+          <input type="text" id="signup-lastname" />
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Email Address</label>
+        <input type="email" id="signup-email" />
+      </div>
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="signup-password" />
+      </div>
+      <button class="cta-button" style="width: 100%" id="signup-btn">
+        Sign Up
+      </button>
+      <p style="margin-top: 1.5rem; font-size: 0.9rem">
+        Already have an account?
+        <a href="#" id="show-login" style="color: var(--color-tertiary)"
+          >Login</a
+        >
+      </p>
+    </div>
+
+    <div
+      id="account-section"
+      class="account-card"
+      style="display: none; text-align: left; max-width: 800px"
+    >
+      <div class="profile-header">
+        <h2 id="p-full-name">User Name</h2>
+        <p id="p-email">user@example.com</p>
+      </div>
+
+      <div class="tab-container">
+        <button class="tab-btn active" id="tab-history-btn">
+          Order History
+        </button>
+        <button class="tab-btn" id="tab-settings-btn">Settings</button>
+        <button
+          id="logout-btn"
+          style="
+            margin-left: auto;
+            color: #ff4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-family: inherit;
+          "
+        >
+          Logout
+        </button>
+      </div>
+
+      <div id="tab-history">
+        <div id="orders-list"></div>
+      </div>
+
+      <div id="tab-settings" style="display: none">
         <div class="signup-grid">
-            <div class="input-group">
-                <label>First Name</label>
-                <input type="text" id="signup-firstname">
-            </div>
-            <div class="input-group">
-                <label>Last Name</label>
-                <input type="text" id="signup-lastname">
-            </div>
+          <div class="input-group">
+            <label>First Name</label>
+            <input type="text" id="edit-firstname" />
+          </div>
+          <div class="input-group">
+            <label>Last Name</label>
+            <input type="text" id="edit-lastname" />
+          </div>
         </div>
-        <div class="input-group">
-            <label>Email Address</label>
-            <input type="email" id="signup-email">
-        </div>
-        <div class="input-group">
-            <label>Password</label>
-            <input type="password" id="signup-password">
-        </div>
-        <button class="cta-button" style="width:100%;" id="signup-btn">Sign Up</button>
-        <p style="margin-top:1.5rem;font-size:0.9rem;">Already have an account? <a href="#" id="show-login" style="color:var(--color-tertiary);">Login</a></p>
+        <button class="cta-button" id="save-profile-btn">Save Changes</button>
+      </div>
     </div>
 
-    <!-- ACCOUNT DASHBOARD -->
-    <div id="account-section" class="account-card" style="display:none;text-align:left;max-width:800px;">
-        <div class="profile-header">
-            <h2 id="p-full-name">User Name</h2>
-            <p id="p-email">user@example.com</p>
-        </div>
-
-        <div class="tab-container">
-            <button class="tab-btn active" id="tab-history-btn">Order History</button>
-            <button class="tab-btn" id="tab-settings-btn">Settings</button>
-            <button id="logout-btn" style="margin-left:auto;color:#ff4444;background:none;border:none;cursor:pointer;font-weight:700;font-family:inherit;">Logout</button>
-        </div>
-
-        <div id="tab-history">
-            <div id="orders-list"></div>
-        </div>
-
-        <div id="tab-settings" style="display:none;">
-            <div class="signup-grid">
-                <div class="input-group">
-                    <label>First Name</label>
-                    <input type="text" id="edit-firstname">
-                </div>
-                <div class="input-group">
-                    <label>Last Name</label>
-                    <input type="text" id="edit-lastname">
-                </div>
-            </div>
-            <button class="cta-button" id="save-profile-btn">Save Changes</button>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
     <script>
-        const loginSection   = document.getElementById("login-section");
-        const signupSection  = document.getElementById("signup-section");
-        const accountSection = document.getElementById("account-section");
+      const loginSection = document.getElementById("login-section");
+      const signupSection = document.getElementById("signup-section");
+      const accountSection = document.getElementById("account-section");
+      const authAlert = document.getElementById("auth-alert");
 
-        // Tab switching
-        document.getElementById("show-signup").onclick = () => { loginSection.style.display="none"; signupSection.style.display="block"; };
-        document.getElementById("show-login").onclick  = () => { signupSection.style.display="none"; loginSection.style.display="block"; };
+      // Parse URL params for auth guards
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("msg") === "login_required") {
+        authAlert.style.display = "block";
+      }
 
-        document.getElementById("tab-history-btn").onclick  = () => switchTab("history");
-        document.getElementById("tab-settings-btn").onclick = () => switchTab("settings");
+      // Tab switching
+      document.getElementById("show-signup").onclick = () => {
+        loginSection.style.display = "none";
+        signupSection.style.display = "block";
+      };
+      document.getElementById("show-login").onclick = () => {
+        signupSection.style.display = "none";
+        loginSection.style.display = "block";
+      };
+      document.getElementById("tab-history-btn").onclick = () =>
+        switchTab("history");
+      document.getElementById("tab-settings-btn").onclick = () =>
+        switchTab("settings");
 
-        function switchTab(tab) {
-            document.getElementById("tab-history").style.display  = tab === "history"  ? "block" : "none";
-            document.getElementById("tab-settings").style.display = tab === "settings" ? "block" : "none";
-            document.getElementById("tab-history-btn").classList.toggle("active",  tab === "history");
-            document.getElementById("tab-settings-btn").classList.toggle("active", tab === "settings");
+      function switchTab(tab) {
+        document.getElementById("tab-history").style.display =
+          tab === "history" ? "block" : "none";
+        document.getElementById("tab-settings").style.display =
+          tab === "settings" ? "block" : "none";
+        document
+          .getElementById("tab-history-btn")
+          .classList.toggle("active", tab === "history");
+        document
+          .getElementById("tab-settings-btn")
+          .classList.toggle("active", tab === "settings");
+      }
+
+      // ── SIGNUP ──────────────────────────────────────────
+      document.getElementById("signup-btn").onclick = async () => {
+        const firstName = document
+          .getElementById("signup-firstname")
+          .value.trim();
+        const lastName = document
+          .getElementById("signup-lastname")
+          .value.trim();
+        const email = document.getElementById("signup-email").value.trim();
+        const password = document.getElementById("signup-password").value;
+
+        if (!firstName || !lastName || !email || !password) {
+          alert("Please fill in all fields.");
+          return;
         }
 
-        // ── SIGNUP ──────────────────────────────────────────
-        document.getElementById("signup-btn").onclick = async () => {
-            const firstName = document.getElementById("signup-firstname").value.trim();
-            const lastName  = document.getElementById("signup-lastname").value.trim();
-            const email     = document.getElementById("signup-email").value.trim();
-            const password  = document.getElementById("signup-password").value;
+        try {
+          const res = await fetch("/api/users/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ firstName, lastName, email, password }),
+          });
+          if (res.status === 409) {
+            alert("Email already in use.");
+            return;
+          }
+          if (!res.ok) throw new Error();
+          loginUser(await res.json());
+        } catch {
+          let users = JSON.parse(localStorage.getItem("kf_users") || "[]");
+          if (users.find((u) => u.email === email)) {
+            alert("Email already in use.");
+            return;
+          }
+          const newUser = { firstName, lastName, email, password };
+          users.push(newUser);
+          localStorage.setItem("kf_users", JSON.stringify(users));
+          loginUser(newUser);
+        }
+      };
 
-            if (!firstName || !lastName || !email || !password) {
-                alert("Please fill in all fields."); return;
-            }
+      // ── LOGIN ────────────────────────────────────────────
+      document.getElementById("login-btn").onclick = async () => {
+        const email = document.getElementById("login-email").value.trim();
+        const password = document.getElementById("login-password").value;
 
-            try {
-                const res = await fetch("/api/users/register", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ firstName, lastName, email, password }),
-                });
-                if (res.status === 409) { alert("Email already in use."); return; }
-                if (!res.ok) throw new Error();
-                const user = await res.json();
-                loginUser(user);
-            } catch {
-                // Server offline — fall back to localStorage
-                let users = JSON.parse(localStorage.getItem("kf_users") || "[]");
-                if (users.find(u => u.email === email)) { alert("Email already in use."); return; }
-                const newUser = { firstName, lastName, email, password };
-                users.push(newUser);
-                localStorage.setItem("kf_users", JSON.stringify(users));
-                loginUser(newUser);
-            }
-        };
-
-        // ── LOGIN ────────────────────────────────────────────
-        document.getElementById("login-btn").onclick = async () => {
-            const email    = document.getElementById("login-email").value.trim();
-            const password = document.getElementById("login-password").value;
-
-            if (!email || !password) { alert("Please fill in all fields."); return; }
-
-            try {
-                const res = await fetch("/api/users/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password }),
-                });
-                if (res.status === 401) { alert("Invalid email or password."); return; }
-                if (!res.ok) throw new Error();
-                const user = await res.json();
-                loginUser(user);
-            } catch {
-                // Server offline — fall back to localStorage
-                const users = JSON.parse(localStorage.getItem("kf_users") || "[]");
-                const user  = users.find(u => u.email === email && u.password === password);
-                if (!user) { alert("Invalid email or password."); return; }
-                loginUser(user);
-            }
-        };
-
-        // ── SHARED ───────────────────────────────────────────
-        function loginUser(user) {
-            localStorage.setItem("loggedInUser",  user.email);
-            localStorage.setItem("kf_user_data",  JSON.stringify(user));
-            showAccount(user);
+        if (!email || !password) {
+          alert("Please fill in all fields.");
+          return;
         }
 
-        function showAccount(user) {
-            loginSection.style.display   = "none";
-            signupSection.style.display  = "none";
-            accountSection.style.display = "block";
-            document.getElementById("p-full-name").textContent  = `${user.firstName} ${user.lastName}`;
-            document.getElementById("p-email").textContent      = user.email;
-            document.getElementById("edit-firstname").value     = user.firstName;
-            document.getElementById("edit-lastname").value      = user.lastName;
-            renderOrders();
+        try {
+          const res = await fetch("/api/users/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+          if (res.status === 401) {
+            alert("Invalid email or password.");
+            return;
+          }
+          if (!res.ok) throw new Error();
+          loginUser(await res.json());
+        } catch {
+          const users = JSON.parse(localStorage.getItem("kf_users") || "[]");
+          const user = users.find(
+            (u) => u.email === email && u.password === password,
+          );
+          if (!user) {
+            alert("Invalid email or password.");
+            return;
+          }
+          loginUser(user);
+        }
+      };
+
+      // ── SHARED ───────────────────────────────────────────
+      function loginUser(user) {
+        localStorage.setItem("loggedInUser", user.email);
+        localStorage.setItem("kf_user_data", JSON.stringify(user));
+
+        // Check if we need to redirect them back to where they were
+        const redirectTarget = urlParams.get("redirect");
+        if (redirectTarget === "builder") {
+          window.location.href = "builder.html";
+        } else if (redirectTarget === "cart") {
+          window.location.href = "cart.html";
+        } else {
+          showAccount(user);
+        }
+      }
+
+      function showAccount(user) {
+        authAlert.style.display = "none";
+        loginSection.style.display = "none";
+        signupSection.style.display = "none";
+        accountSection.style.display = "block";
+        document.getElementById("p-full-name").textContent =
+          `${user.firstName} ${user.lastName}`;
+        document.getElementById("p-email").textContent = user.email;
+        document.getElementById("edit-firstname").value = user.firstName;
+        document.getElementById("edit-lastname").value = user.lastName;
+        renderOrders();
+      }
+
+      // ── ORDERS ───────────────────────────────────────────
+      async function renderOrders() {
+        const list = document.getElementById("orders-list");
+        const email = localStorage.getItem("loggedInUser");
+        let myOrders = [];
+        try {
+          const res = await fetch(
+            `/api/orders?email=${encodeURIComponent(email)}`,
+          );
+          if (!res.ok) throw new Error();
+          myOrders = await res.json();
+        } catch {
+          list.innerHTML = `<p style="opacity:0.5; color:red;">Could not connect to database.</p>`;
+          return;
         }
 
-        // ── ORDERS ───────────────────────────────────────────
-        async function renderOrders() {
-            const list  = document.getElementById("orders-list");
-            const email = localStorage.getItem("loggedInUser");
-            let myOrders = [];
+        if (!myOrders.length) {
+          list.innerHTML = `<p style="opacity:0.5;">No builds ordered yet.</p>`;
+          return;
+        }
 
-            try {
-                const res = await fetch(`/api/orders?email=${encodeURIComponent(email)}`);
-                if (!res.ok) throw new Error();
-                myOrders = await res.json();
-            } catch {
-                // Server offline — read from localStorage
-                const all = JSON.parse(localStorage.getItem("kf_orders") || "[]");
-                myOrders  = all.filter(o => o.userEmail === email);
-            }
+        list.innerHTML = [...myOrders]
+          .reverse() // Show newest first
+          .map((o) => {
+            // Formats the integer 1 into "0000001"
+            const formattedId = String(o.displayId || o._id).padStart(7, "0");
 
-            if (!myOrders.length) {
-                list.innerHTML = `<p style="opacity:0.5;">No builds saved yet.</p>`;
-                return;
-            }
+            // Extract mod names for display
+            const modsHtml =
+              o.mods && o.mods.length > 0
+                ? o.mods.map((m) => m.name).join(", ")
+                : "No additional mods";
 
-            list.innerHTML = [...myOrders].reverse().map(o => `
-                <div class="order-card">
-                    <div class="order-meta"><span>ID: #${o.id}</span><span>${o.date}</span></div>
-                    <p><strong>${o.case.name}</strong></p>
-                    <p style="font-size:0.85rem;opacity:0.7;">${o.switch.name} &bull; ${o.keycaps.name}</p>
-                    <p style="margin-top:0.8rem;color:var(--color-tertiary);font-weight:700;">${o.total}</p>
+            return `
+                <div class="order-card" style="margin-bottom: 1.5rem; background: rgba(128,128,128,0.05); padding: 1.5rem; border-radius: 8px;">
+                    <div class="order-meta" style="display:flex; justify-content:space-between; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(128,128,128,0.1); padding-bottom: 0.5rem;">
+                        <span style="font-weight: 900; color: var(--color-tertiary);">Order #${formattedId}</span>
+                        <span style="opacity: 0.6; font-size: 0.85rem;">${o.date}</span>
+                    </div>
+                    <p style="margin-bottom: 0.3rem;"><strong>Kit: ${o.case.name}</strong></p>
+                    <p style="font-size:0.85rem;opacity:0.7; margin-bottom: 0.2rem;">Switch: ${o.switch.name} &bull; Keycaps: ${o.keycaps.name}</p>
+                    <p style="font-size:0.85rem;opacity:0.9; color: var(--color-tertiary);">Mods: ${modsHtml}</p>
+                    <p style="margin-top:0.8rem; font-weight:900; font-size: 1.1rem;">Total: £${o.totalPrice.toFixed(2)}</p>
                 </div>
-            `).join("");
+            `;
+          })
+          .join("");
+      }
+
+      // ── EDIT PROFILE ─────────────────────────────────────
+      document.getElementById("save-profile-btn").onclick = async () => {
+        const email = localStorage.getItem("loggedInUser");
+        const firstName = document
+          .getElementById("edit-firstname")
+          .value.trim();
+        const lastName = document.getElementById("edit-lastname").value.trim();
+        if (!firstName || !lastName) {
+          alert("Name fields cannot be empty.");
+          return;
         }
-
-        // ── EDIT PROFILE ─────────────────────────────────────
-        document.getElementById("save-profile-btn").onclick = async () => {
-            const email     = localStorage.getItem("loggedInUser");
-            const firstName = document.getElementById("edit-firstname").value.trim();
-            const lastName  = document.getElementById("edit-lastname").value.trim();
-            if (!firstName || !lastName) { alert("Name fields cannot be empty."); return; }
-
-            try {
-                const res = await fetch("/api/users/update", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, firstName, lastName }),
-                });
-                if (!res.ok) throw new Error();
-            } catch {
-                // Server offline — update localStorage only
-                let users = JSON.parse(localStorage.getItem("kf_users") || "[]");
-                const idx = users.findIndex(u => u.email === email);
-                if (idx !== -1) { users[idx].firstName = firstName; users[idx].lastName = lastName; localStorage.setItem("kf_users", JSON.stringify(users)); }
-            }
-
-            const user = { ...JSON.parse(localStorage.getItem("kf_user_data")), firstName, lastName };
-            localStorage.setItem("kf_user_data", JSON.stringify(user));
-            alert("Settings saved!");
-            showAccount(user);
-        };
-
-        // ── LOGOUT ───────────────────────────────────────────
-        document.getElementById("logout-btn").onclick = () => {
-            localStorage.removeItem("loggedInUser");
-            localStorage.removeItem("kf_user_data");
-            window.location.reload();
-        };
-
-        // ── AUTO-LOGIN if session exists ─────────────────────
-        if (localStorage.getItem("loggedInUser")) {
-            showAccount(JSON.parse(localStorage.getItem("kf_user_data")));
+        try {
+          await fetch("/api/users/update", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, firstName, lastName }),
+          });
+        } catch {
+          let users = JSON.parse(localStorage.getItem("kf_users") || "[]");
+          const idx = users.findIndex((u) => u.email === email);
+          if (idx !== -1) {
+            users[idx].firstName = firstName;
+            users[idx].lastName = lastName;
+            localStorage.setItem("kf_users", JSON.stringify(users));
+          }
         }
+        const user = {
+          ...JSON.parse(localStorage.getItem("kf_user_data")),
+          firstName,
+          lastName,
+        };
+        localStorage.setItem("kf_user_data", JSON.stringify(user));
+        alert("Settings saved!");
+        showAccount(user);
+      };
+
+      // ── SECURE LOGOUT ────────────────────────────────────
+      document.getElementById("logout-btn").onclick = () => {
+        // Only clear the session keys. Do NOT delete their saved cart (so they keep it next time they log in)
+        localStorage.removeItem("loggedInUser");
+        localStorage.removeItem("kf_user_data");
+        // Redirecting forcibly clears memory/state for the active view
+        window.location.href = "index.html";
+      };
+
+      // ── AUTO-LOGIN if session exists ─────────────────────
+      if (localStorage.getItem("loggedInUser")) {
+        showAccount(JSON.parse(localStorage.getItem("kf_user_data")));
+      }
     </script>
-</body>
+  </body>
 </html>

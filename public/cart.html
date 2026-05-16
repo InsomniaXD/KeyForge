@@ -9,6 +9,16 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap"
       rel="stylesheet"
     />
+
+    <script>
+      const activeUser = localStorage.getItem("loggedInUser");
+      if (!activeUser) {
+        window.location.href = "account.html?msg=login_required&redirect=cart";
+      }
+      if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
   </head>
   <body>
     <nav>
@@ -24,7 +34,7 @@
       <div class="nav-right">
         <div class="nav-links">
           <a href="about.html">About</a>
-          <a href="account.html">Login</a>
+          <a href="account.html" id="account-link">Account</a>
           <a
             href="cart.html"
             style="color: var(--color-tertiary); font-weight: 900"

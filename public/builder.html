@@ -10,13 +10,19 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap"
       rel="stylesheet"
     />
+
+    <script>
+      const activeUser = localStorage.getItem("loggedInUser");
+      if (!activeUser) {
+        window.location.href =
+          "account.html?msg=login_required&redirect=builder";
+      }
+      // Apply dark theme early
+      if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
   </head>
-  <script>
-    // Instantly apply dark theme before body paints to prevent flashing
-    if (localStorage.getItem("theme") === "dark") {
-      document.documentElement.classList.add("dark"); // Or document.body below
-    }
-  </script>
   <body>
     <nav>
       <div class="nav-left">
@@ -96,7 +102,6 @@
 
       <aside class="summary-panel">
         <h3>Your Build</h3>
-
         <div class="summary-card">
           <span class="summary-label">Kit</span>
           <div id="summary-1" class="summary-value">

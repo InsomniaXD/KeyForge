@@ -1,7 +1,7 @@
 /// ===============================
 /// THEME SYSTEM
 /// ===============================
-let products = []; // Preserved for catalog data sync
+let products = [];
 const themeToggle = document.getElementById("theme-toggle");
 const themeIcon = document.getElementById("theme-icon");
 const body = document.body;
@@ -18,7 +18,6 @@ function updateThemeUI() {
   }
 }
 
-// Apply active theme state on page initialization
 if (localStorage.getItem("theme") === "dark") {
   body.classList.add("dark");
 } else {
@@ -38,12 +37,7 @@ if (themeToggle) {
 }
 
 /// ===============================
-/// AUTH SYNC
-/// ===============================
-// Leave everything below this line unchanged...
-
-/// ===============================
-/// AUTH SYNC
+/// AUTH SYNC & HELPERS
 /// ===============================
 function syncAuthStatus() {
   const user = localStorage.getItem("loggedInUser");
@@ -54,6 +48,19 @@ function syncAuthStatus() {
   }
 }
 syncAuthStatus();
+
+// Helper to get the specific user's cart key
+function getUserCartKey() {
+  const user = localStorage.getItem("loggedInUser");
+  return user ? `kf_cart_${user}` : null;
+}
+
+// Safe ID Generator
+function generateSafeId() {
+  return window.crypto && crypto.randomUUID
+    ? crypto.randomUUID()
+    : "kf_" + Date.now().toString(36) + Math.random().toString(36).substring(2);
+}
 
 /// ===============================
 /// BUILD STATE
@@ -85,14 +92,13 @@ function renderGrid(category) {
       <h4>${product.name}</h4>
       <p class="desc">${product.desc}</p>
       <p class="price">£${product.price.toFixed(2)}</p>
-    </div>
-  `,
+    </div>`,
     )
     .join("");
 }
 
 /// ===============================
-/// SHOW STEP
+/// SHOW STEP & PROGRESS
 /// ===============================
 function showStep(step) {
   steps.forEach((s) => s.classList.remove("active"));
@@ -110,9 +116,6 @@ function showStep(step) {
   updateProgress();
 }
 
-/// ===============================
-/// PROGRESS
-/// ===============================
 function updateProgress() {
   progressSteps.forEach((p) => {
     const step = Number(p.dataset.progress);
@@ -128,19 +131,24 @@ function updateProgress() {
 }
 
 /// ===============================
-/// SUMMARY
+/// SUMMARY & TOTALS
 /// ===============================
 function renderSummaryItem(id, data, isMulti = false) {
   const el = document.getElementById(id);
   if (!el) return;
   if (isMulti) {
     el.innerHTML = data.length
-      ? data.map((item) => `<div>${item.name}</div>`).join("")
+      ? data
+          .map(
+            (item) =>
+              `<div style="display:flex; justify-content:space-between;"><span>${item.name}</span><span>£${item.price.toFixed(2)}</span></div>`,
+          )
+          .join("")
       : `<span class="empty">Not selected</span>`;
     return;
   }
   el.innerHTML = data.selected
-    ? `<div>${data.name}</div>`
+    ? `<div style="display:flex; justify-content:space-between;"><span>${data.name}</span><span>£${data.price.toFixed(2)}</span></div>`
     : `<span class="empty">Not selected</span>`;
 }
 
@@ -163,7 +171,7 @@ function syncSummary() {
 }
 
 /// ===============================
-/// CARD CLICK (delegated)
+/// INTERACTIONS
 /// ===============================
 document.addEventListener("click", (e) => {
   const card = e.target.closest(".option-card");
@@ -199,24 +207,33 @@ document.addEventListener("click", (e) => {
       .forEach((c) => c.classList.remove("selected"));
     card.classList.add("selected");
   }
-
   syncSummary();
   updateProgress();
 });
 
-/// ===============================
-/// NAV BUTTONS
-/// ===============================
+// BACK BUTTON
 document.querySelectorAll(".back-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     if (currentStep > 1) showStep(currentStep - 1);
   });
 });
+
+// NEXT BUTTON (Now enforces step completion validation)
 document.querySelectorAll(".next-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
-    if (currentStep < steps.length) showStep(currentStep + 1);
+    if (currentStep < steps.length) {
+      const requiredKey = stepMap[currentStep];
+      // Prevent proceeding if the current step is required (1, 2, 3) and not selected
+      if (currentStep < 4 && !build[requiredKey].selected) {
+        alert("Please select a part before proceeding to the next step.");
+        return;
+      }
+      showStep(currentStep + 1);
+    }
   });
 });
+
+// PROGRESS BAR CLICK (Left Sidebar)
 progressSteps.forEach((p) => {
   p.addEventListener("click", () => {
     const step = Number(p.dataset.progress);
@@ -225,9 +242,7 @@ progressSteps.forEach((p) => {
   });
 });
 
-/// ===============================
-/// CLEAR BUILD
-/// ===============================
+// CLEAR BUILD BUTTON
 const clearBtn = document.getElementById("clear-build-btn");
 if (clearBtn) {
   clearBtn.addEventListener("click", () => {
@@ -249,23 +264,34 @@ if (clearBtn) {
 /// ===============================
 /// CART LOGIC
 /// ===============================
-const addToCartBtn = document.getElementById("add-to-cart-btn");
-const cartToast = document.getElementById("cart-toast");
-
-// Updates the number in the Navbar: "Cart (2)"
 function updateCartCount() {
   const cartLink = document.getElementById("cart-link");
   if (!cartLink) return;
-  const cart = JSON.parse(localStorage.getItem("kf_cart") || "[]");
+  const userKey = getUserCartKey();
+  if (!userKey) {
+    cartLink.innerText = `Cart (0)`;
+    return;
+  }
+  const cart = JSON.parse(localStorage.getItem(userKey) || "[]");
   cartLink.innerText = `Cart (${cart.length})`;
 }
 
-// Check cart count as soon as the page loads
 document.addEventListener("DOMContentLoaded", updateCartCount);
+
+// SINGLE ADD TO CART LISTENER
+const addToCartBtn = document.getElementById("add-to-cart-btn");
+const cartToast = document.getElementById("cart-toast");
 
 if (addToCartBtn) {
   addToCartBtn.addEventListener("click", () => {
-    // 1. Prevent adding incomplete builds
+    const userKey = getUserCartKey();
+    if (!userKey) {
+      alert("Please log in to add items to your cart.");
+      window.location.href = "account.html?redirect=builder";
+      return;
+    }
+
+    // Strict validation: Prevent adding if required parts are missing.
     if (
       !build.case.selected ||
       !build.switch.selected ||
@@ -274,12 +300,11 @@ if (addToCartBtn) {
       alert(
         "Please select a Kit, Switch, and Keycaps before adding to your cart.",
       );
-      return;
+      return; // Stops execution dead in its tracks.
     }
 
-    // 2. Package the current build into an object
     const cartItem = {
-      id: Math.random().toString(36).substr(2, 9), // Generates a random ID for this build
+      id: generateSafeId(),
       case: build.case,
       switch: build.switch,
       keycaps: build.keycaps,
@@ -287,42 +312,33 @@ if (addToCartBtn) {
       totalPrice: getTotal(),
     };
 
-    // 3. Save to LocalStorage array (so cart.html can read it)
-    const cart = JSON.parse(localStorage.getItem("kf_cart") || "[]");
+    const cart = JSON.parse(localStorage.getItem(userKey) || "[]");
     cart.push(cartItem);
-    localStorage.setItem("kf_cart", JSON.stringify(cart));
+    localStorage.setItem(userKey, JSON.stringify(cart));
 
-    // 4. Update the Navbar counter
     updateCartCount();
 
-    // 5. Show the success Toast Notification
     if (cartToast) {
       cartToast.classList.add("show");
-      setTimeout(() => {
-        cartToast.classList.remove("show");
-      }, 3000); // Hides after 3 seconds
+      setTimeout(() => cartToast.classList.remove("show"), 3000);
     }
 
-    // 6. Reset the builder for the next keyboard
     if (clearBtn) clearBtn.click();
   });
 }
 
 /// ===============================
-/// INIT & DATA FETCH
+/// INIT
 /// ===============================
 async function init() {
   try {
     const response = await fetch("/api/products");
     products = await response.json();
-
     ["case", "switch", "keycaps", "mods"].forEach(renderGrid);
-
     showStep(1);
     syncSummary();
   } catch (err) {
     console.error("Init failed:", err);
   }
 }
-
 init();
