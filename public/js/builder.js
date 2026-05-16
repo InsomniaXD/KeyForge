@@ -31,12 +31,7 @@ if (themeToggle) {
 }
 
 /// ===============================
-/// AUTH SYNC
-/// ===============================
-// Leave everything below this line unchanged...
-
-/// ===============================
-/// AUTH SYNC
+/// AUTH SYNC & HELPERS
 /// ===============================
 function syncAuthStatus() {
   const user = localStorage.getItem("loggedInUser");
