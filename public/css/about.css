@@ -121,7 +121,7 @@ nav {
   text-align: center; 
   
   /* Adds your image with a subtle dark overlay so text stays readable */
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://en.akkogear.com/wp-content/uploads/2023/06/cropped-3.jpg');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://cdn.shopify.com/s/files/1/0815/1800/2452/files/00_4c5a7d44-3ea2-4793-80d0-38c39a53140f.jpg?v=1766222639'); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
