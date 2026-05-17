@@ -28,14 +28,11 @@ const pool = mysql.createPool({
 
 /* =========================
    DATABASE INIT
-   Runs once on startup — creates all tables from the ERD schema
-   and seeds required lookup data if not already present.
 ========================= */
 async function initDB() {
   const conn = await pool.getConnection();
   try {
 
-    // ── AccountTypes ──────────────────────────────────────────
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS AccountTypes (
         typeID          INT          AUTO_INCREMENT PRIMARY KEY,
@@ -44,7 +41,6 @@ async function initDB() {
       )
     `);
 
-    // ── Accounts ──────────────────────────────────────────────
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS Accounts (
         accountID    INT          AUTO_INCREMENT PRIMARY KEY,
@@ -59,7 +55,6 @@ async function initDB() {
       )
     `);
 
-    // ── PartType ──────────────────────────────────────────────
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS PartType (
         partTypeID          INT          AUTO_INCREMENT PRIMARY KEY,
@@ -68,7 +63,6 @@ async function initDB() {
       )
     `);
 
-    // ── Parts ─────────────────────────────────────────────────
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS Parts (
         partID          INT            AUTO_INCREMENT PRIMARY KEY,
@@ -84,7 +78,6 @@ async function initDB() {
       )
     `);
 
-    // ── Cart ──────────────────────────────────────────────────
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS Cart (
         cartID      INT       AUTO_INCREMENT PRIMARY KEY,
@@ -98,7 +91,6 @@ async function initDB() {
       )
     `);
 
-    // ── Builds ────────────────────────────────────────────────
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS Builds (
         buildID     INT       AUTO_INCREMENT PRIMARY KEY,
@@ -110,7 +102,6 @@ async function initDB() {
       )
     `);
 
-    // ── BuildParts ────────────────────────────────────────────
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS BuildParts (
         buildPartsID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -126,7 +117,6 @@ async function initDB() {
       )
     `);
 
-    // ── CartItems ─────────────────────────────────────────────
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS CartItems (
         cartItemsID INT       AUTO_INCREMENT PRIMARY KEY,
@@ -142,7 +132,6 @@ async function initDB() {
       )
     `);
 
-    // ── Orders ────────────────────────────────────────────────
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS Orders (
         orderID         INT            AUTO_INCREMENT PRIMARY KEY,
@@ -163,7 +152,6 @@ async function initDB() {
       )
     `);
 
-    // ── OrderItems ────────────────────────────────────────────
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS OrderItems (
         orderItemsID    INT            AUTO_INCREMENT PRIMARY KEY,
@@ -196,6 +184,16 @@ async function initDB() {
         (4, 'mods',    'Modifications and accessories')
     `);
 
+    // ── Seed: Parts ───────────────────────────────────────────
+    const partTypeMap = { case: 1, switch: 2, keycaps: 3, mods: 4 };
+    for (const product of products) {
+      await conn.execute(`
+        INSERT IGNORE INTO Parts (partID, partTypeID, partName, imageURL, partDescription, price)
+        VALUES (?, ?, ?, ?, ?, ?)`,
+        [product.id, partTypeMap[product.category], product.name, product.img, product.desc, product.price]
+      );
+    }
+
     console.log("✓ Database schema ready.");
   } finally {
     conn.release();
@@ -203,7 +201,7 @@ async function initDB() {
 }
 
 /* =========================
-   PRODUCTS (catalog — served from flat file)
+   PRODUCTS
 ========================= */
 app.get("/api/products", (req, res) => {
   if (!products)
@@ -214,8 +212,6 @@ app.get("/api/products", (req, res) => {
 /* =========================
    USERS / ACCOUNTS
 ========================= */
-
-// REGISTER
 app.post("/api/users/register", async (req, res) => {
   const { email, firstName, lastName, password } = req.body;
   if (!email || !firstName || !lastName || !password)
@@ -242,7 +238,6 @@ app.post("/api/users/register", async (req, res) => {
   }
 });
 
-// LOGIN
 app.post("/api/users/login", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
@@ -264,7 +259,6 @@ app.post("/api/users/login", async (req, res) => {
   }
 });
 
-// UPDATE PROFILE
 app.put("/api/users/update", async (req, res) => {
   const { email, firstName, lastName } = req.body;
   if (!email || !firstName || !lastName)
@@ -287,8 +281,6 @@ app.put("/api/users/update", async (req, res) => {
 
 /* =========================
    CHECKOUT
-   Flow: resolve account → create Order → for each cart item:
-         create Build + BuildParts + OrderItem (price snapshot)
 ========================= */
 app.post("/api/checkout", async (req, res) => {
   const { userEmail, items, shipping, paymentMethod } = req.body;
@@ -299,7 +291,6 @@ app.post("/api/checkout", async (req, res) => {
   try {
     await conn.beginTransaction();
 
-    // Resolve accountID from email
     const [accountRows] = await conn.execute(
       "SELECT accountID FROM Accounts WHERE email = ?",
       [userEmail]
@@ -307,18 +298,15 @@ app.post("/api/checkout", async (req, res) => {
     if (accountRows.length === 0) throw new Error("Account not found.");
     const accountID = accountRows[0].accountID;
 
-    // Calculate grand total
     const orderPrice = items.reduce(
       (sum, item) => sum + (Number(item.totalPrice) || 0),
       0
     );
 
-    // Build delivery address string from shipping object
     const deliveryAddress = shipping
       ? `${shipping.address}, ${shipping.city}, ${shipping.postal}`
       : null;
 
-    // Create the Order record
     const [orderResult] = await conn.execute(
       `INSERT INTO Orders
          (accountID, deliveryAddress, orderPrice, orderStatus, paymentMethod, paidAt)
@@ -327,16 +315,13 @@ app.post("/api/checkout", async (req, res) => {
     );
     const orderID = orderResult.insertId;
 
-    // Persist each build from the cart
     for (const item of items) {
-      // Create a Builds record
       const [buildResult] = await conn.execute(
         "INSERT INTO Builds (accountID) VALUES (?)",
         [accountID]
       );
       const buildID = buildResult.insertId;
 
-      // Flatten all parts (case, switch, keycaps + any mods) and insert into BuildParts
       const parts = [
         item.case,
         item.switch,
@@ -351,7 +336,6 @@ app.post("/api/checkout", async (req, res) => {
         );
       }
 
-      // Create the OrderItem — snapshot the price at time of sale
       await conn.execute(
         `INSERT INTO OrderItems (orderID, buildID, unitPriceAtSale)
          VALUES (?, ?, ?)`,
@@ -371,20 +355,19 @@ app.post("/api/checkout", async (req, res) => {
 });
 
 /* =========================
-   ORDERS — fetch order history for a user
+   ORDERS
 ========================= */
 app.get("/api/orders", async (req, res) => {
   const { email } = req.query;
   if (!email) return res.status(400).json({ error: "email param required." });
 
   try {
-    // 1. Fetch all orders belonging to this account
     const [orders] = await pool.execute(
       `SELECT
          o.orderID         AS displayId,
          o.orderPrice      AS totalPrice,
          o.orderStatus,
-         o.deliveryAddress AS shippingAddress,
+         o.deliveryAddress,
          o.orderedAt       AS date,
          o.paymentMethod
        FROM Orders o
@@ -396,7 +379,6 @@ app.get("/api/orders", async (req, res) => {
 
     if (orders.length === 0) return res.json([]);
 
-    // 2. Fetch all builds + their parts for those orders in a single query
     const orderIDs     = orders.map((o) => o.displayId);
     const placeholders = orderIDs.map(() => "?").join(",");
 
@@ -416,12 +398,9 @@ app.get("/api/orders", async (req, res) => {
       orderIDs
     );
 
-    // 3. Group parts back into structured build objects per order
     const buildsByOrder = {};
     for (const row of rows) {
-      if (!buildsByOrder[row.orderID])
-        buildsByOrder[row.orderID] = {};
-
+      if (!buildsByOrder[row.orderID]) buildsByOrder[row.orderID] = {};
       const builds = buildsByOrder[row.orderID];
       if (!builds[row.buildID]) {
         builds[row.buildID] = {
@@ -433,21 +412,32 @@ app.get("/api/orders", async (req, res) => {
           mods:       [],
         };
       }
-
       const part = { name: row.partName, price: Number(row.partPrice) };
       const cat  = row.category;
-
       if      (cat === "case")    builds[row.buildID].case    = part;
       else if (cat === "switch")  builds[row.buildID].switch  = part;
       else if (cat === "keycaps") builds[row.buildID].keycaps = part;
       else if (cat === "mods")    builds[row.buildID].mods.push(part);
     }
 
-    // 4. Attach assembled items array to each order and return
-    const result = orders.map((o) => ({
-      ...o,
-      items: Object.values(buildsByOrder[o.displayId] || {}),
-    }));
+    const result = orders.map((o) => {
+      let shippingAddress = null;
+      if (o.deliveryAddress) {
+        const parts = o.deliveryAddress.split(",").map((s) => s.trim());
+        shippingAddress = {
+          address: parts[0] || "",
+          city:    parts[1] || "",
+          postal:  parts[2] || "",
+        };
+      }
+
+      return {
+        ...o,
+        date: new Date(o.date).toLocaleDateString(),
+        shippingAddress,
+        items: Object.values(buildsByOrder[o.displayId] || {}),
+      };
+    });
 
     res.json(result);
   } catch (err) {
@@ -458,8 +448,6 @@ app.get("/api/orders", async (req, res) => {
 
 /* =========================
    START SERVER
-   initDB() runs first — tables are guaranteed to exist
-   before the server accepts any requests.
 ========================= */
 const PORT = process.env.PORT || 3000;
 initDB()
