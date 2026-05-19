@@ -2,8 +2,18 @@ const express = require("express");
 const path = require("path");
 const mysql = require("mysql2/promise");
 
-// ─── If you have a products data file, keep this require ───
-// const products = require("./data/products");
+// Safely pull from data/products.js out of the public folder
+let productsList = [];
+try {
+  productsList = require(path.join(__dirname, "..", "data", "products"));
+} catch (e) {
+  try {
+    // Alternative fallback path
+    productsList = require(path.join(__dirname, "data", "products"));
+  } catch (err) {
+    console.error("⚠️ Could not load data/products.js file automatically. Check your paths!");
+  }
+}
 
 const app = express();
 app.use(express.json());
@@ -15,8 +25,6 @@ app.get("/", (req, res) => {
 
 /* =========================
    DATABASE CONNECTION POOL
-   Set these in phpMyAdmin / your MySQL server.
-   Either use environment variables (recommended) or hard-code for local dev.
 ========================= */
 const pool = mysql.createPool({
   host:     process.env.DB_HOST     || "localhost",
@@ -29,12 +37,11 @@ const pool = mysql.createPool({
 
 /* =========================
    DATABASE SETUP
-   Run once on server start to create tables if they don't exist.
-   You can also run these SQL statements directly in phpMyAdmin.
 ========================= */
 async function initDB() {
   const conn = await pool.getConnection();
   try {
+    // 1. Users Table
     await conn.query(`
       CREATE TABLE IF NOT EXISTS users (
         id          INT AUTO_INCREMENT PRIMARY KEY,
@@ -46,6 +53,7 @@ async function initDB() {
       )
     `);
 
+    // 2. Orders Table
     await conn.query(`
       CREATE TABLE IF NOT EXISTS orders (
         id            INT AUTO_INCREMENT PRIMARY KEY,
@@ -59,21 +67,69 @@ async function initDB() {
       )
     `);
 
-    console.log("✅  Database tables ready.");
+    // 3. Products Table
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS products (
+        id          INT AUTO_INCREMENT PRIMARY KEY,
+        category    VARCHAR(50)   NOT NULL,
+        name        VARCHAR(255)  NOT NULL,
+        price       DECIMAL(10,2) NOT NULL,
+        \`desc\`    TEXT,
+        img         TEXT
+      )
+    `);
+
+    console.log("✅ Database tables ready.");
   } finally {
     conn.release();
   }
 }
 
 /* =========================
-   PRODUCTS (catalog)
-   Uncomment if you have a local products file,
-   or replace with a DB query if products live in MySQL.
+   DATABASE SEEDING ROUTINE
 ========================= */
-// app.get("/api/products", (req, res) => {
-//   if (!products) return res.status(500).json({ error: "Product catalog missing." });
-//   res.json(products);
-// });
+async function seedProducts() {
+  if (!Array.isArray(productsList) || productsList.length === 0) {
+    console.log("⚠️ No local products array available to seed.");
+    return;
+  }
+  try {
+    const [rows] = await pool.query("SELECT COUNT(*) as count FROM products");
+    if (rows[0].count === 0) {
+      console.log("🌱 Seeding products into database...");
+      for (const prod of productsList) {
+        await pool.query(
+          "INSERT INTO products (id, category, name, price, `desc`, img) VALUES (?, ?, ?, ?, ?, ?)",
+          [prod.id, prod.category, prod.name, prod.price, prod.desc, prod.img]
+        );
+      }
+      console.log("✅ Database successfully seeded with products!");
+    }
+  } catch (err) {
+    console.error("❌ Error seeding products:", err);
+  }
+}
+
+/* =========================
+   PRODUCTS (catalog) - NOW LIVE FROM DB
+========================= */
+app.get("/api/products", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM products");
+    
+    // FIX: Parse the MySQL DECIMAL string back into a JavaScript Number
+    // so builder.js doesn't crash when calling .toFixed(2)
+    const parsedRows = rows.map((row) => ({
+      ...row,
+      price: parseFloat(row.price), 
+    }));
+    
+    res.json(parsedRows);
+  } catch (err) {
+    console.error("Error fetching products from DB:", err);
+    res.status(500).json({ error: "Could not retrieve product catalog." });
+  }
+});
 
 /* =========================
    USERS – REGISTER
@@ -124,7 +180,7 @@ app.post("/api/users/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials." });
     }
 
-    res.json(rows[0]); // never returns password column
+    res.json(rows[0]);
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ error: "Database error." });
@@ -154,6 +210,29 @@ app.put("/api/users/update", async (req, res) => {
   } catch (err) {
     console.error("Update error:", err);
     res.status(500).json({ error: "Update failed." });
+  }
+});
+
+/* =========================
+   ORDERS – SAVE BUILD (Added Missing Route)
+========================= */
+app.post("/api/orders", async (req, res) => {
+  const { userEmail, case: kfCase, switch: kfSwitch, keycaps, mods, totalPrice } = req.body;
+  if (!userEmail) {
+    return res.status(400).json({ error: "User email required." });
+  }
+
+  try {
+    const itemsPayload = { case: kfCase, switch: kfSwitch, keycaps, mods };
+    await pool.query(
+      `INSERT INTO orders (userEmail, items, totalPrice, orderDate)
+       VALUES (?, ?, ?, CURDATE())`,
+      [userEmail, JSON.stringify(itemsPayload), totalPrice || 0]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error saving build order:", err);
+    res.status(500).json({ error: "Failed to save order to database." });
   }
 });
 
@@ -204,7 +283,6 @@ app.get("/api/orders", async (req, res) => {
       [email]
     );
 
-    // Parse JSON columns back to objects (MySQL returns them as strings)
     const parsed = rows.map((o) => ({
       ...o,
       displayId: o.id,
@@ -223,17 +301,21 @@ app.get("/api/orders", async (req, res) => {
 });
 
 /* =========================
-   START
+   START SERVER
 ========================= */
 const PORT = process.env.PORT || 3000;
 
 initDB()
+  .then(() => seedProducts()) // Automatically seeds MySQL if products table is empty
   .then(() => {
+    app.use((req, res, next) => {
+      res.status(404).sendFile(path.join(__dirname, "index.html"));
+    });
     app.listen(PORT, () =>
       console.log(`KeyForge server running → http://localhost:${PORT}`)
     );
   })
   .catch((err) => {
-    console.error("❌  Could not connect to database:", err.message);
+    console.error("❌ Could not connect to database:", err.message);
     process.exit(1);
   });
