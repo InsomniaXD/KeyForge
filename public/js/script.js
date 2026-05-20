@@ -82,4 +82,28 @@ function placeOrder(build) {
   openOverlay("success-overlay");
 }
 
-document.addEventListener("DOMContentLoaded", syncAuthStatus);
+// Get unique cart storage key matching current user globally
+window.getUserCartKey = function() {
+  const user = localStorage.getItem("loggedInUser");
+  return user ? `kf_cart_${user}` : null;
+};
+
+// Compute and refresh cart item indicators in headers across all pages
+window.updateCartCount = function() {
+  const cartLink = document.getElementById("cart-link");
+  if (!cartLink) return;
+  
+  const userKey = window.getUserCartKey();
+  if (!userKey) {
+    cartLink.innerText = `Cart (0)`;
+    return;
+  }
+  const cart = JSON.parse(localStorage.getItem(userKey) || "[]");
+  cartLink.innerText = `Cart (${cart.length})`;
+};
+
+// Fire initial state alignment routines on DOM readiness
+document.addEventListener("DOMContentLoaded", () => {
+  syncAuthStatus();
+  window.updateCartCount();
+});

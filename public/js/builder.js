@@ -1,51 +1,4 @@
 let products = [];
-const themeToggle = document.getElementById("theme-toggle");
-const themeIcon = document.getElementById("theme-icon");
-const body = document.body;
-
-const sunIcon = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
-const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
-
-// Update theme icon matching body element class
-function updateThemeUI() {
-  if (!themeIcon) return;
-  themeIcon.innerHTML = body.classList.contains("dark") ? sunIcon : moonIcon;
-}
-
-// Load preselected dark mode preference
-if (localStorage.getItem("theme") === "dark") {
-  body.classList.add("dark");
-}
-updateThemeUI();
-
-// Trigger application dark mode layout shift
-if (themeToggle) {
-  themeToggle.addEventListener("click", () => {
-    body.classList.toggle("dark");
-    localStorage.setItem(
-      "theme",
-      body.classList.contains("dark") ? "dark" : "light",
-    );
-    updateThemeUI();
-  });
-}
-
-// Sync header nav based on current login session
-function syncAuthStatus() {
-  const user = localStorage.getItem("loggedInUser");
-  const accountLink = document.getElementById("account-link");
-  if (user && accountLink) {
-    accountLink.textContent = "Account";
-    accountLink.href = "account.html";
-  }
-}
-syncAuthStatus();
-
-// Get unique cart storage key matching current user
-function getUserCartKey() {
-  const user = localStorage.getItem("loggedInUser");
-  return user ? `kf_cart_${user}` : null;
-}
 
 // Generate unique ID string for cart builds
 function generateSafeId() {
@@ -245,27 +198,18 @@ if (clearBtn) {
   });
 }
 
-// Compute and refresh cart item indicators in headers
-function updateCartCount() {
-  const cartLink = document.getElementById("cart-link");
-  if (!cartLink) return;
-  const userKey = getUserCartKey();
-  if (!userKey) {
-    cartLink.innerText = `Cart (0)`;
-    return;
-  }
-  const cart = JSON.parse(localStorage.getItem(userKey) || "[]");
-  cartLink.innerText = `Cart (${cart.length})`;
-}
-
-document.addEventListener("DOMContentLoaded", updateCartCount);
-
 const addToCartBtn = document.getElementById("add-to-cart-btn");
 const cartToast = document.getElementById("cart-toast");
 
 // Add completed assembly structure into local storage cart list
 if (addToCartBtn) {
   addToCartBtn.addEventListener("click", () => {
+    // Check if script.js globally loaded this function successfully
+    if (typeof getUserCartKey !== "function" || typeof updateCartCount !== "function") {
+      alert("System utilities are still loading. Please refresh and try again.");
+      return;
+    }
+
     const userKey = getUserCartKey();
     if (!userKey) {
       alert("Please log in to add items to your cart.");
