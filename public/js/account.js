@@ -4,13 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const accountSection = document.getElementById("account-section");
   const authAlert = document.getElementById("auth-alert");
 
-  // Parse URL params for auth guards
+  // Check URL parameters for required authentication messages
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get("msg") === "login_required" && authAlert) {
     authAlert.style.display = "block";
   }
 
-  // --- UI TOGGLE SWITCHES ---
+  // Handle switching between login and registration views
   document.getElementById("show-signup").onclick = (e) => {
     e.preventDefault();
     loginSection.style.display = "none";
@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("tab-settings-btn").onclick = () =>
     switchTab("settings");
 
+  // Switch visible tabs inside account dashboard
   function switchTab(tab) {
     document.getElementById("tab-history").style.display =
       tab === "history" ? "block" : "none";
@@ -41,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .classList.toggle("active", tab === "settings");
   }
 
-  // --- SIGNUP LOGIC ---
+  // Handle new user account registration
   document.getElementById("signup-btn").onclick = async () => {
     const firstName = document.getElementById("signup-firstname").value.trim();
     const lastName = document.getElementById("signup-lastname").value.trim();
@@ -54,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
+      // Send register request to api
       const res = await fetch("/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -63,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!res.ok) throw new Error();
       loginUser(await res.json());
     } catch {
+      // Register locally in storage if offline
       let users = JSON.parse(localStorage.getItem("kf_users") || "[]");
       if (users.find((u) => u.email === email))
         return alert("Email already in use.");
@@ -74,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // --- LOGIN LOGIC ---
+  // Handle existing user login authentication
   document.getElementById("login-btn").onclick = async () => {
     const email = document.getElementById("login-email").value.trim();
     const password = document.getElementById("login-password").value;
@@ -82,6 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!email || !password) return alert("Please fill in all fields.");
 
     try {
+      // Verify login credentials via api
       const res = await fetch("/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -91,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!res.ok) throw new Error();
       loginUser(await res.json());
     } catch {
+      // Authenticate against local storage if offline
       const users = JSON.parse(localStorage.getItem("kf_users") || "[]");
       const user = users.find(
         (u) => u.email === email && u.password === password,
@@ -100,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // --- SHARED ---
+  // Set user state in storage and route next view
   function loginUser(user) {
     localStorage.setItem("loggedInUser", user.email);
     localStorage.setItem("kf_user_data", JSON.stringify(user));
@@ -111,6 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
     else showAccount(user);
   }
 
+  // Populate and show account profile details
   function showAccount(user) {
     if (authAlert) authAlert.style.display = "none";
     loginSection.style.display = "none";
@@ -126,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderOrders();
   }
 
-  // --- ORDERS RENDERING ---
+  // Retrieve and display order history list
   async function renderOrders() {
     const list = document.getElementById("orders-list");
     if (!list) return;
@@ -134,10 +140,12 @@ document.addEventListener("DOMContentLoaded", () => {
     let myOrders = [];
 
     try {
+      // Fetch order data from api
       const res = await fetch(`/api/orders?email=${encodeURIComponent(email)}`);
       if (!res.ok) throw new Error();
       myOrders = await res.json();
     } catch {
+      // Fallback to local storage order cache
       const allOrders = JSON.parse(localStorage.getItem("kf_orders") || "[]");
       myOrders = allOrders.filter((o) => o.userEmail === email);
     }
@@ -148,6 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
+      // Build dynamic HTML content for order elements
       list.innerHTML = [...myOrders]
         .reverse()
         .map((o) => {
@@ -156,7 +165,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "0",
           );
 
-          // Safe data normalization layers
           let orderItems = o.items || o.builds || o.products;
 
           if (!orderItems || !Array.isArray(orderItems)) {
@@ -175,7 +183,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
           }
 
-          // Safety mapping for addresses
           let shippingHtml = "";
           const addr = o.shippingAddress || o.shipping;
           if (addr && addr.address) {
@@ -249,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- EDIT PROFILE ---
+  // Handle user profile updates
   document.getElementById("save-profile-btn").onclick = async () => {
     const email = localStorage.getItem("loggedInUser");
     const firstName = document.getElementById("edit-firstname").value.trim();
@@ -258,12 +265,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!firstName || !lastName) return alert("Name fields cannot be empty.");
 
     try {
+      // Send profile updates to backend api
       await fetch("/api/users/update", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, firstName, lastName }),
       });
     } catch {
+      // Fallback update in local storage if offline
       let users = JSON.parse(localStorage.getItem("kf_users") || "[]");
       const idx = users.findIndex((u) => u.email === email);
       if (idx !== -1) {
@@ -282,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showAccount(user);
   };
 
-  // --- LOGOUT LOGIC ---
+  // Handle user session logout action
   const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) {
     logoutBtn.onclick = () => {
@@ -292,7 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // --- AUTO-LOGIN ---
+  // Automatically authenticate active existing user session
   if (localStorage.getItem("loggedInUser")) {
     showAccount(JSON.parse(localStorage.getItem("kf_user_data")));
   }

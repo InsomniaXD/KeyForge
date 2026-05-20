@@ -17,7 +17,7 @@
         window.location.href =
           "account.html?msg=login_required&redirect=builder";
       }
-      // Apply dark theme early
+      /* Check and apply dark theme from local storage */
       if (localStorage.getItem("theme") === "dark") {
         document.documentElement.classList.add("dark");
       }

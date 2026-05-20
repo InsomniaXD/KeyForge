@@ -1,3 +1,4 @@
+/* Custom global palette variables */
 :root {
   --color-primary: #eff4d9;
   --color-secondary: #181a13;
@@ -6,12 +7,13 @@
   --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Dark theme configuration variables overrides */
 body.dark {
   --color-primary: #181a13;
   --color-secondary: #eff4d9;
 }
 
-/* RESET */
+/* Universal elements layout rules reset */
 * {
   margin: 0;
   padding: 0;
@@ -19,13 +21,14 @@ body.dark {
   font-family: "Inter", sans-serif;
 }
 
+/* Base structural canvas initialization styles */
 body {
   background: var(--color-primary);
   color: var(--color-secondary);
   transition: var(--transition);
 }
 
-/* ================= NAVBAR ================= */
+/* Fixed navigation top navigation header layout */
 nav {
   display: flex;
   justify-content: space-between;
@@ -38,6 +41,7 @@ nav {
   z-index: 1000;
 }
 
+/* Positioning blocks inside navbar */
 .nav-left,
 .nav-right {
   display: flex;
@@ -45,21 +49,25 @@ nav {
   gap: 2rem;
 }
 
+/* Branding typographic identity header element */
 .logo {
   font-weight: 900;
   font-size: 1.4rem;
   color: var(--color-secondary);
 }
 
+/* Highlight accent segment inside logo text */
 .logo span {
   color: var(--color-tertiary);
 }
 
+/* Navigation page navigation list box row */
 .nav-links {
   display: flex;
   gap: 1.5rem;
 }
 
+/* Individual secondary navigation hyper-link properties */
 .nav-links a {
   text-decoration: none;
   color: var(--color-secondary);
@@ -70,12 +78,13 @@ nav {
   transition: 0.3s;
 }
 
+/* Interactive link rollover hover highlight */
 .nav-links a:hover {
   opacity: 1;
   color: var(--color-tertiary);
 }
 
-/* THEME BUTTON */
+/* Circular toggle button element for color scheme */
 #theme-toggle {
   display: flex;
   align-items: center;
@@ -89,12 +98,14 @@ nav {
   height: 40px;
   transition: var(--transition);
 }
+
+/* Scheme switcher slight clockwise hover animation */
 #theme-toggle:hover {
   border-color: var(--color-tertiary);
   transform: rotate(15deg);
 }
 
-/* BUTTON */
+/* Primary transactional call-to-action block button */
 .cta-button {
   background: var(--color-tertiary);
   color: white;
@@ -106,38 +117,39 @@ nav {
   transition: var(--transition);
 }
 
+/* Call-to-action button color change on hover */
 .cta-button:hover {
   background: var(--color-accent);
 }
 
-/* HERO */
+/* Large introductory showcase viewport hero panel */
 .hero { 
   height: 85vh; 
   display: flex; 
   align-items: center; 
   justify-content: center; 
   text-align: center; 
-  
-  /* Adds your image with a subtle dark overlay so text stays readable */
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://en.akkogear.com/wp-content/uploads/2023/06/cropped-3.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
+/* Large hero title presentation typography settings */
 .hero-content h1 { 
   font-size: clamp(2.5rem, 8vw, 4.8rem); 
   line-height: 1.05; 
   margin-bottom: 2.5rem; 
   font-weight: 900; 
-  color: #eff4d9; /* Forces text to stay light/readable over a dark image background */
+  color: #eff4d9; 
 }
 
+/* Title focus colored accent word highlighting */
 .hero-content span { 
   color: var(--color-tertiary); 
 }
 
-/* OVERLAY */
+/* Modal light box dark back drop curtain screen */
 .overlay {
   position: fixed;
   inset: 0;
@@ -147,21 +159,21 @@ nav {
   background: rgba(0, 0, 0, 0.8);
 }
 
-/* ACCOUNT */
+/* User verification or entry layout panel box */
 .account-card {
   background: rgba(128, 128, 128, 0.05);
   padding: 3rem;
   border-radius: 12px;
 }
 
-/* ================= NAV SEPARATOR ================= */
+/* Thin vertical partitioning divider inside navbar styling */
 .nav-separator {
   width: 1px;
   height: 20px;
   background: rgba(128, 128, 128, 0.3);
 }
 
-/* ================= ACCOUNT PAGE ================= */
+/* Dedicated account profile settings display layout card */
 .account-card {
   max-width: 600px !important;
   width: 90%;
@@ -173,11 +185,13 @@ nav {
   text-align: center;
 }
 
+/* Input field wrapping container for text alignment */
 .input-group {
   text-align: left;
   margin-bottom: 1.2rem;
 }
 
+/* Form descriptor field labels typography attributes */
 .input-group label {
   display: block;
   font-size: 0.8rem;
@@ -186,6 +200,7 @@ nav {
   opacity: 0.7;
 }
 
+/* Interactive editable fillable text entry fields properties */
 .input-group input {
   width: 100%;
   padding: 0.8rem;
@@ -197,12 +212,14 @@ nav {
   font-size: 1rem;
 }
 
+/* Symmetric two column layout structure grid for forms */
 .signup-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
+/* Multi-view configuration switch buttons list container row */
 .tab-container {
   display: flex;
   gap: 2rem;
@@ -210,6 +227,7 @@ nav {
   margin-bottom: 2rem;
 }
 
+/* Tab switcher control element trigger baseline settings */
 .tab-btn {
   background: none;
   border: none;
@@ -223,10 +241,12 @@ nav {
   font-family: inherit;
 }
 
+/* Toggle visibility accent state indicator for tab */
 .tab-btn.active {
   opacity: 1;
 }
 
+/* Active tab underlines indicator border underline */
 .tab-btn.active::after {
   content: "";
   position: absolute;
@@ -237,18 +257,24 @@ nav {
   background: var(--color-tertiary);
 }
 
+/* Profile user header information introductory row */
 .profile-header {
   margin-bottom: 2rem;
   text-align: left;
 }
+
+/* Large profile section title typography settings */
 .profile-header h2 {
   font-size: 2rem;
   margin-bottom: 0.2rem;
 }
+
+/* Profile user description status subtext properties */
 .profile-header p {
   opacity: 0.6;
 }
 
+/* Completed transactions overview summary card container */
 .order-card {
   background: rgba(128, 128, 128, 0.05);
   padding: 1.5rem;
@@ -258,6 +284,7 @@ nav {
   border: 1px solid rgba(128, 128, 128, 0.1);
 }
 
+/* Historic transaction metadata rows timestamp layout spacing */
 .order-meta {
   display: flex;
   justify-content: space-between;
@@ -266,16 +293,12 @@ nav {
   margin-bottom: 0.5rem;
 }
 
-/* ================================= 
-   CART PAGE SPECIFIC STYLES 
-   ================================= */
-
-/* 1. Expand the card for the cart view */
+/* Max width layout adjustment configuration for basket wrapper view */
 .cart-wrapper {
-  max-width: 800px !important; /* Make it wider than the login card */
+  max-width: 800px !important;
 }
 
-/* 2. Individual Build Cards */
+/* Block container row for configured setup builds inside cart */
 .cart-build-item {
   background: rgba(128, 128, 128, 0.08);
   border: 1px solid rgba(128, 128, 128, 0.15);
@@ -285,6 +308,7 @@ nav {
   text-align: left;
 }
 
+/* Header line layout separating internal part listing elements */
 .build-header {
   display: flex;
   justify-content: space-between;
@@ -295,6 +319,7 @@ nav {
   border-bottom: 1px solid rgba(128, 128, 128, 0.1);
 }
 
+/* Item extraction remove trigger action control button */
 .remove-btn {
   background: transparent;
   border: 1px solid var(--color-accent);
@@ -307,11 +332,13 @@ nav {
   transition: 0.2s;
 }
 
+/* Removal trigger highlighted context backdrop roll hover */
 .remove-btn:hover {
   background: var(--color-accent);
   color: white;
 }
 
+/* Itemized singular unit description text data line */
 .part-line {
   display: flex;
   justify-content: space-between;
@@ -319,11 +346,13 @@ nav {
   padding: 0.3rem 0;
 }
 
+/* Explicit line value pricing item font thickness */
 .part-price {
   font-weight: 700;
   opacity: 0.8;
 }
 
+/* Sub-aggregation summary item total cost value segment */
 .build-subtotal {
   margin-top: 1rem;
   padding-top: 0.5rem;
@@ -333,7 +362,7 @@ nav {
   color: var(--color-tertiary);
 }
 
-/* 3. Grand Total Section */
+/* Checkout collection invoice overall final value panel display */
 .cart-grand-total {
   display: flex;
   justify-content: space-between;
@@ -347,13 +376,14 @@ nav {
   font-weight: 900;
 }
 
-/* 4. Shipping & Payment Sections */
+/* User fulfillment delivery info block area alignment */
 .shipping-section {
   margin-top: 3rem;
   padding-top: 2rem;
   border-top: 1px solid rgba(128, 128, 128, 0.1);
 }
 
+/* Transaction gateway selectors grid alignment map matrix */
 .payment-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -361,6 +391,7 @@ nav {
   margin-top: 1rem;
 }
 
+/* Execution transaction platform connector trigger layout selector */
 .pay-btn {
   background: rgba(128, 128, 128, 0.1);
   border: 1px solid rgba(128, 128, 128, 0.2);
@@ -372,16 +403,19 @@ nav {
   transition: 0.3s;
 }
 
+/* Transaction action option hover highlight response */
 .pay-btn:hover {
   border-color: var(--color-tertiary);
   background: rgba(128, 128, 128, 0.15);
 }
-/* CART STYLES */
+
+/* Extended spacing width constraint config layout wrapper */
 .cart-wrapper {
   max-width: 850px !important;
   margin: 3rem auto !important;
 }
 
+/* Custom configured card configuration background fill */
 .cart-build-item {
   background: rgba(128, 128, 128, 0.05);
   border: 1px solid rgba(128, 128, 128, 0.1);
@@ -390,6 +424,7 @@ nav {
   margin-bottom: 1.5rem;
 }
 
+/* List element bold header typography block split line row */
 .build-header {
   display: flex;
   justify-content: space-between;
@@ -399,6 +434,7 @@ nav {
   margin-bottom: 1rem;
 }
 
+/* Primary checkout summation overall final valuation highlight bar */
 .cart-grand-total {
   display: flex;
   justify-content: space-between;
@@ -411,7 +447,7 @@ nav {
   margin: 2rem 0;
 }
 
-/* ADDRESS SECTION */
+/* User physical location drop point block wrapper card */
 .address-box {
   background: rgba(128, 128, 128, 0.03);
   border: 1px dashed rgba(128, 128, 128, 0.2);
@@ -420,6 +456,7 @@ nav {
   line-height: 1.6;
 }
 
+/* Explicit clean execution transaction control click trigger button */
 .pay-btn {
   background: transparent;
   border: 1px solid rgba(128, 128, 128, 0.2);
@@ -431,15 +468,19 @@ nav {
   transition: 0.3s;
 }
 
+/* Operational payment processor select option rollover accent coloring */
 .pay-btn:hover {
   border-color: var(--color-tertiary);
   background: rgba(10, 92, 19, 0.05);
 }
+
+/* Centered content block wrap constraint frame container */
 .cart-wrapper {
   max-width: 850px !important;
   margin: 3rem auto !important;
 }
 
+/* Left justified physical address information box wrapper */
 .address-box {
   background: rgba(128, 128, 128, 0.03);
   border: 1px dashed rgba(128, 128, 128, 0.2);
@@ -449,6 +490,7 @@ nav {
   text-align: left;
 }
 
+/* Invoice macro global calculations absolute summation block panel */
 .cart-grand-total {
   display: flex;
   justify-content: space-between;
@@ -461,6 +503,7 @@ nav {
   margin: 2rem 0;
 }
 
+/* Transaction process finalize baseline trigger action item */
 .pay-btn {
   background: transparent;
   border: 1px solid rgba(128, 128, 128, 0.2);
@@ -472,6 +515,7 @@ nav {
   transition: 0.3s;
 }
 
+/* Payment gateway submission button hovered interaction layout view */
 .pay-btn:hover {
   border-color: var(--color-tertiary);
   background: rgba(10, 92, 19, 0.05);

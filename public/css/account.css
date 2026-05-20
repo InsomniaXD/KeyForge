@@ -1,3 +1,4 @@
+/* Account verification box container framework sizing */
 .account-card {
   max-width: 600px;
   width: 90%;
@@ -9,16 +10,19 @@
   text-align: center;
 }
 
+/* Enlarged horizontal profile summary display block section */
 .wide-card {
   text-align: left;
   max-width: 800px;
 }
 
+/* Interactive user entry container block wrapper element */
 .input-group {
   text-align: left;
   margin-bottom: 1.2rem;
 }
 
+/* Field descriptor labels title typography properties layout */
 .input-group label {
   display: block;
   font-size: 0.8rem;
@@ -27,6 +31,7 @@
   opacity: 0.7;
 }
 
+/* Form user interactive editable string input field fields */
 .input-group input {
   width: 100%;
   padding: 0.8rem;
@@ -36,25 +41,30 @@
   color: inherit;
 }
 
+/* Symmetric dual side registration data grid structure matrix */
 .signup-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
+/* Expanded submission full width action button */
 .signup-btn-full {
   width: 100%;
 }
 
+/* Toggle option baseline anchor informational baseline text block */
 .account-switch-text {
   margin-top: 1.5rem;
   font-size: 0.9rem;
 }
 
+/* Accent link navigation anchor text color declaration */
 .tertiary-link {
   color: var(--color-tertiary);
 }
 
+/* Profile sections toggle dashboard header links grouping layout */
 .tab-container {
   display: flex;
   gap: 2rem;
@@ -62,6 +72,7 @@
   margin-bottom: 2rem;
 }
 
+/* Singular clickable configuration segment selector layout text */
 .tab-btn {
   background: none;
   border: none;
@@ -73,10 +84,12 @@
   position: relative;
 }
 
+/* Accent active toggle state color highlighting wrapper class */
 .tab-btn.active {
   opacity: 1;
 }
 
+/* Bottom highlighted indicator rule bar under active option tab */
 .tab-btn.active::after {
   content: "";
   position: absolute;
@@ -87,6 +100,7 @@
   background: var(--color-tertiary);
 }
 
+/* Session terminate trigger control alignment positioning right */
 #logout-btn {
   margin-left: auto;
   color: #ff4444;
@@ -96,20 +110,24 @@
   font-weight: 700;
 }
 
+/* Profile dashboard header title layout container */
 .profile-header {
   margin-bottom: 2rem;
   text-align: left;
 }
 
+/* Large header dashboard user overview title typography label */
 .profile-header h2 {
   font-size: 2rem;
   margin-bottom: 0.2rem;
 }
 
+/* Profile details user information paragraph line status descriptor */
 .profile-header p {
   opacity: 0.6;
 }
 
+/* Customer order execution summary data display container box */
 .order-card {
   background: rgba(128, 128, 128, 0.05);
   padding: 1.5rem;
@@ -119,6 +137,7 @@
   border: 1px solid rgba(128, 128, 128, 0.1);
 }
 
+/* Internal purchase order information tracking numbers formatting row */
 .order-meta {
   display: flex;
   justify-content: space-between;
@@ -127,17 +146,20 @@
   margin-bottom: 0.5rem;
 }
 
+/* Text transform helper formatting case override descriptor label */
 .order-card-switch-caps {
   font-size: 0.85rem;
   opacity: 0.7;
 }
 
+/* Financial transactional macro summary price label emphasis row */
 .order-card-total {
   margin-top: 0.8rem;
   color: var(--color-tertiary);
   font-weight: 700;
 }
 
+/* Empty data array fall back placeholder notice styling text */
 .no-builds-text {
   opacity: 0.5;
 }

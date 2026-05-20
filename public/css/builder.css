@@ -1,14 +1,9 @@
-/* =========================
-   BUILDER LAYOUT
-========================= */
-
+/* Page layout container */
 .builder-page {
   min-height: calc(100vh - 82px);
 }
-/* =========================
-   LEFT SIDEBAR
-========================= */
 
+/* Sidebar panel layout */
 .builder-sidebar {
   position: fixed;
   top: 82px;
@@ -19,20 +14,19 @@
   border-right: 1px solid rgba(128, 128, 128, 0.1);
 }
 
+/* Sidebar sticky position */
 .sidebar-inner {
   position: sticky;
   top: 2rem;
 }
 
+/* Sidebar secondary text */
 .sidebar-copy {
   opacity: 0.6;
   margin-top: 1rem;
 }
 
-/* =========================
-   PROGRESS
-========================= */
-
+/* Progress bar container */
 .progress {
   margin-top: 2rem;
   display: flex;
@@ -40,6 +34,7 @@
   gap: 0.7rem;
 }
 
+/* Progress step styles */
 .progress-step {
   padding: 0.8rem;
   border: 1px solid rgba(128, 128, 128, 0.12);
@@ -49,59 +44,46 @@
   transition: 0.2s;
 }
 
+/* Active progress step highlight */
 .progress-step.active {
   opacity: 1;
   border-color: var(--color-tertiary);
   background: rgba(10, 92, 19, 0.05);
 }
 
-/* =========================
-   MAIN CONTENT (CENTER)
-========================= */
-
+/* Main workspace layout */
 .builder-main {
   margin-left: 320px;
   margin-right: 320px;
   padding: 3rem;
 }
 
-/* =========================
-   STEP VISIBILITY
-========================= */
-
+/* Step container hidden by default */
 .step {
   display: none;
   padding-top: 120px;
 }
 
+/* Visible active step */
 .step.active {
   display: block;
 }
 
-/* =========================
-   STEP BUTTONS
-========================= */
-
+/* Action buttons container */
 .step-actions {
   display: flex;
   gap: 1rem;
   margin-top: 2rem;
 }
 
-/* =========================
-   PRODUCT GRID
-========================= */
-
+/* Grid layout for configuration choices */
 .option-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 }
 
-/* =========================
-   PRODUCT CARDS
-========================= */
-
+/* Card option styles */
 .option-card {
   padding: 1.2rem;
   border: 1px solid rgba(128, 128, 128, 0.2);
@@ -111,19 +93,19 @@
   background: rgba(128, 128, 128, 0.03);
 }
 
+/* Option card hover effect */
 .option-card:hover {
   transform: translateY(-4px);
   border-color: var(--color-tertiary);
 }
 
+/* Selected option card highlight */
 .option-card.selected {
   border-color: var(--color-tertiary);
   background: rgba(10, 92, 19, 0.06);
 }
 
-/* =========================
-   PRODUCT IMAGES
-========================= */
+/* Images inside option cards */
 .option-card img {
   width: 100%;
   height: 180px;
@@ -132,34 +114,30 @@
   border-radius: 8px;
   margin-bottom: 12px;
   display: block;
-
-  /* This creates a 'Product Box' look */
-  /* Using a very light gray makes white-background images blend in perfectly */
   background-color: #f9f9f9;
-
-  /* Adds a subtle inner shadow to make the product 'pop' */
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
 }
+
+/* Flex layout for uniform option card height */
 .option-card {
   display: flex;
   flex-direction: column;
-  height: 100%; /* Ensures all cards in a row are the same height */
+  height: 100%;
 }
 
+/* Typography for option headings */
 .option-card h4 {
-  margin-top: auto; /* Pushes text to the top, but keeps alignment clean */
+  margin-top: auto;
   font-size: 1rem;
   margin-bottom: 5px;
 }
 
-/* Optional: Slight zoom effect on the image when hovering the card */
+/* Image hover effect */
 .option-card:hover img {
   transform: scale(1.05);
 }
-/* =========================
-   RIGHT SUMMARY PANEL
-========================= */
 
+/* Right sidebar container for summary */
 .summary-panel {
   position: fixed;
   top: 82px;
@@ -171,14 +149,12 @@
   overflow-y: auto;
 }
 
+/* Summary header spacing */
 .summary-panel h3 {
   margin-bottom: 1.5rem;
 }
 
-/* =========================
-   SUMMARY CONTENT
-========================= */
-
+/* Card container for item details */
 .summary-card {
   background: rgba(128, 128, 128, 0.05);
   border-radius: 8px;
@@ -189,6 +165,7 @@
   gap: 0.4rem;
 }
 
+/* Text styles for labels */
 .summary-label {
   font-size: 0.8rem;
   font-weight: 700;
@@ -197,12 +174,14 @@
   opacity: 0.6;
 }
 
+/* Text styles for values */
 .summary-value {
   font-weight: 500;
   color: var(--color-tertiary);
   line-height: 1.4;
 }
 
+/* Placeholder for unselected selections */
 .summary-value .empty {
   opacity: 0.4;
   font-style: italic;
@@ -210,12 +189,14 @@
   color: inherit;
 }
 
+/* Divider border */
 .summary-divider {
   height: 1px;
   background: rgba(128, 128, 128, 0.2);
   margin: 1.5rem 0;
 }
 
+/* Reset or clear configuration button */
 .clear-btn {
   width: 100%;
   padding: 0.8rem;
@@ -228,44 +209,32 @@
   color: inherit;
 }
 
+/* Clear button hover state */
 .clear-btn:hover {
   background: rgba(128, 128, 128, 0.1);
 }
 
-/* =========================
-   STEP HEADER (FIXED LAYOUT BAR)
-========================= */
-
+/* Fixed layout banner for step progress tracking */
 .step-header {
   position: fixed;
   top: 82px;
   left: 320px;
   right: 320px;
-
   z-index: 1000;
-
   display: grid;
-
   grid-template-columns: 1fr auto auto;
   grid-template-rows: auto auto;
-
   grid-template-areas:
     "title back next"
     "content content content";
-
   align-items: center;
   gap: 0.5rem 1rem;
-
   padding: 1.5rem 2rem;
-
   background: var(--color-primary);
-
   border-bottom: 1px solid rgba(128, 128, 128, 0.08);
 }
-/* =========================
-   HEADER BUTTONS
-========================= */
 
+/* Configuration control buttons */
 .back-btn,
 .next-btn {
   padding: 0.8rem 1.4rem;
@@ -275,6 +244,8 @@
   font-weight: 700;
   transition: 0.2s;
 }
+
+/* Layout for selected individual build parts */
 .summary-item {
   padding: 0.6rem 0.8rem;
   border-radius: 10px;
@@ -283,18 +254,19 @@
   font-weight: 600;
 }
 
+/* Highlight style for active chosen item */
 .summary-item.selected {
   background: rgba(10, 92, 19, 0.15);
   border-left: 3px solid var(--color-tertiary);
 }
 
+/* Secondary italicized empty text styling */
 .empty {
   opacity: 0.4;
   font-style: italic;
 }
-/* =========================
-   ADD TO CART BUTTON
-========================= */
+
+/* Button to commit configuration to basket */
 .cart-btn {
   width: 100%;
   padding: 0.8rem;
@@ -307,17 +279,17 @@
   transition: 0.2s;
   font-family: inherit;
 }
+
+/* Cart button background invert on hover */
 .cart-btn:hover {
   background: var(--color-tertiary);
   color: white;
 }
 
-/* =========================
-   TOAST NOTIFICATION
-========================= */
+/* Floating overlay confirmation popup banner */
 .toast-notification {
   position: fixed;
-  bottom: -100px; /* Hidden off-screen initially */
+  bottom: -100px;
   right: 2rem;
   background: var(--color-tertiary);
   color: white;
@@ -329,25 +301,28 @@
   gap: 1.5rem;
   font-weight: 600;
   z-index: 10000;
-  transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy animation */
+  transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
+/* Utility visibility class to display toast */
 .toast-notification.show {
   bottom: 2rem;
 }
+
+/* Underline link element decorations in toast */
 .toast-notification a {
   color: var(--color-primary);
   text-decoration: underline;
   font-weight: 900;
 }
 
-/* =========================
-   CART PAGE SPECIFICS
-========================= */
+/* Standard shopping cart wrapper sizing */
 .cart-wrapper {
   max-width: 800px !important;
   margin: 3rem auto !important;
 }
 
+/* Card container for items added inside cart */
 .cart-build-item {
   background: rgba(128, 128, 128, 0.03);
   border: 1px solid rgba(128, 128, 128, 0.15);
@@ -357,6 +332,7 @@
   text-align: left;
 }
 
+/* Inner header details row for listed cart item */
 .build-header {
   display: flex;
   justify-content: space-between;
@@ -368,6 +344,7 @@
   border-bottom: 1px solid rgba(128, 128, 128, 0.1);
 }
 
+/* Item deletion trigger element button styling */
 .remove-btn {
   background: transparent;
   border: none;
@@ -377,10 +354,13 @@
   opacity: 0.7;
   transition: 0.2s;
 }
+
+/* Removal trigger hover state */
 .remove-btn:hover {
   opacity: 1;
 }
 
+/* Item details text row alignment */
 .part-line {
   display: flex;
   justify-content: space-between;
@@ -389,6 +369,7 @@
   opacity: 0.8;
 }
 
+/* Pricing total label section for chosen option */
 .build-subtotal {
   text-align: right;
   font-weight: 900;
@@ -397,6 +378,7 @@
   font-size: 1.1rem;
 }
 
+/* Grand calculation checkout total row layout */
 .cart-grand-total {
   display: flex;
   justify-content: space-between;
@@ -407,11 +389,13 @@
   border-top: 3px solid rgba(128, 128, 128, 0.2);
 }
 
+/* Delivery destination layout block container */
 .shipping-section {
   margin-top: 3rem;
   text-align: left;
 }
 
+/* Final transactional action section positioning */
 .payment-section {
   margin-top: 3rem;
   padding-top: 2rem;
@@ -419,6 +403,7 @@
   text-align: center;
 }
 
+/* Transaction gateway triggers list block */
 .payment-buttons {
   display: flex;
   gap: 1rem;
@@ -426,6 +411,7 @@
   flex-wrap: wrap;
 }
 
+/* Individual transaction trigger gateway element */
 .pay-btn {
   flex: 1;
   min-width: 150px;
@@ -440,7 +426,8 @@
   transition: 0.2s;
 }
 
+/* Gateway trigger selection hover state color */
 .pay-btn:hover {
   border-color: var(--color-tertiary);
-  background: rgba(10, 92, 19, 0.05); /* Very faint green tint */
+  background: rgba(10, 92, 19, 0.05);
 }

@@ -1,6 +1,3 @@
-/// ===============================
-/// THEME SYSTEM
-/// ===============================
 let products = [];
 const themeToggle = document.getElementById("theme-toggle");
 const themeIcon = document.getElementById("theme-icon");
@@ -9,16 +6,19 @@ const body = document.body;
 const sunIcon = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
 const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
 
+// Update theme icon matching body element class
 function updateThemeUI() {
   if (!themeIcon) return;
   themeIcon.innerHTML = body.classList.contains("dark") ? sunIcon : moonIcon;
 }
 
+// Load preselected dark mode preference
 if (localStorage.getItem("theme") === "dark") {
   body.classList.add("dark");
 }
 updateThemeUI();
 
+// Trigger application dark mode layout shift
 if (themeToggle) {
   themeToggle.addEventListener("click", () => {
     body.classList.toggle("dark");
@@ -30,9 +30,7 @@ if (themeToggle) {
   });
 }
 
-/// ===============================
-/// AUTH SYNC & HELPERS
-/// ===============================
+// Sync header nav based on current login session
 function syncAuthStatus() {
   const user = localStorage.getItem("loggedInUser");
   const accountLink = document.getElementById("account-link");
@@ -43,27 +41,25 @@ function syncAuthStatus() {
 }
 syncAuthStatus();
 
-// Helper to get the specific user's cart key
+// Get unique cart storage key matching current user
 function getUserCartKey() {
   const user = localStorage.getItem("loggedInUser");
   return user ? `kf_cart_${user}` : null;
 }
 
-// Safe ID Generator
+// Generate unique ID string for cart builds
 function generateSafeId() {
   return window.crypto && crypto.randomUUID
     ? crypto.randomUUID()
     : "kf_" + Date.now().toString(36) + Math.random().toString(36).substring(2);
 }
 
-/// ===============================
-/// BUILD STATE
-/// ===============================
 let currentStep = 1;
 const steps = document.querySelectorAll(".step");
 const progressSteps = document.querySelectorAll(".progress-step");
 const stepMap = { 1: "case", 2: "switch", 3: "keycaps", 4: "mods" };
 
+// Hold temporary states of current hardware choices
 let build = {
   case: { id: null, name: "-", price: 0, selected: false },
   switch: { id: null, name: "-", price: 0, selected: false },
@@ -71,9 +67,7 @@ let build = {
   mods: [],
 };
 
-/// ===============================
-/// RENDER GRIDS
-/// ===============================
+// Render custom product options inside catalog card grids
 function renderGrid(category) {
   const container = document.getElementById(`grid-${category}`);
   if (!container) return;
@@ -91,9 +85,7 @@ function renderGrid(category) {
     .join("");
 }
 
-/// ===============================
-/// SHOW STEP & PROGRESS
-/// ===============================
+// Render selected progressive step view configuration
 function showStep(step) {
   steps.forEach((s) => s.classList.remove("active"));
   const target = document.getElementById(`step-${step}`);
@@ -110,6 +102,7 @@ function showStep(step) {
   updateProgress();
 }
 
+// Control step wizard locks and navigation styles
 function updateProgress() {
   progressSteps.forEach((p) => {
     const step = Number(p.dataset.progress);
@@ -124,9 +117,7 @@ function updateProgress() {
   });
 }
 
-/// ===============================
-/// SUMMARY & TOTALS
-/// ===============================
+// Display specific item row configurations in breakdown widget
 function renderSummaryItem(id, data, isMulti = false) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -146,6 +137,7 @@ function renderSummaryItem(id, data, isMulti = false) {
     : `<span class="empty">Not selected</span>`;
 }
 
+// Compute total price of current selected hardware bundle
 function getTotal() {
   return (
     (build.case.price || 0) +
@@ -155,6 +147,7 @@ function getTotal() {
   );
 }
 
+// Sync pricing breakdown display widget metrics
 function syncSummary() {
   renderSummaryItem("summary-1", build.case);
   renderSummaryItem("summary-2", build.switch);
@@ -164,9 +157,7 @@ function syncSummary() {
   if (totalEl) totalEl.innerText = `£${getTotal().toFixed(2)}`;
 }
 
-/// ===============================
-/// INTERACTIONS
-/// ===============================
+// Handle layout selection click triggers across product lists
 document.addEventListener("click", (e) => {
   const card = e.target.closest(".option-card");
   if (!card) return;
@@ -205,19 +196,18 @@ document.addEventListener("click", (e) => {
   updateProgress();
 });
 
-// BACK BUTTON
+// Go back to the previous workspace view
 document.querySelectorAll(".back-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     if (currentStep > 1) showStep(currentStep - 1);
   });
 });
 
-// NEXT BUTTON (Now enforces step completion validation)
+// Validate selection targets and step forward in wizard flow
 document.querySelectorAll(".next-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     if (currentStep < steps.length) {
       const requiredKey = stepMap[currentStep];
-      // Prevent proceeding if the current step is required (1, 2, 3) and not selected
       if (currentStep < 4 && !build[requiredKey].selected) {
         alert("Please select a part before proceeding to the next step.");
         return;
@@ -227,7 +217,7 @@ document.querySelectorAll(".next-btn").forEach((btn) => {
   });
 });
 
-// PROGRESS BAR CLICK (Left Sidebar)
+// Handle jumps from click handlers inside left step bars
 progressSteps.forEach((p) => {
   p.addEventListener("click", () => {
     const step = Number(p.dataset.progress);
@@ -236,7 +226,7 @@ progressSteps.forEach((p) => {
   });
 });
 
-// CLEAR BUILD BUTTON
+// Reset configuration workflow settings entirely
 const clearBtn = document.getElementById("clear-build-btn");
 if (clearBtn) {
   clearBtn.addEventListener("click", () => {
@@ -255,9 +245,7 @@ if (clearBtn) {
   });
 }
 
-/// ===============================
-/// CART LOGIC
-/// ===============================
+// Compute and refresh cart item indicators in headers
 function updateCartCount() {
   const cartLink = document.getElementById("cart-link");
   if (!cartLink) return;
@@ -272,10 +260,10 @@ function updateCartCount() {
 
 document.addEventListener("DOMContentLoaded", updateCartCount);
 
-// SINGLE ADD TO CART LISTENER
 const addToCartBtn = document.getElementById("add-to-cart-btn");
 const cartToast = document.getElementById("cart-toast");
 
+// Add completed assembly structure into local storage cart list
 if (addToCartBtn) {
   addToCartBtn.addEventListener("click", () => {
     const userKey = getUserCartKey();
@@ -285,7 +273,6 @@ if (addToCartBtn) {
       return;
     }
 
-    // Strict validation: Prevent adding if required parts are missing.
     if (
       !build.case.selected ||
       !build.switch.selected ||
@@ -294,7 +281,7 @@ if (addToCartBtn) {
       alert(
         "Please select a Kit, Switch, and Keycaps before adding to your cart.",
       );
-      return; // Stops execution dead in its tracks.
+      return;
     }
 
     const cartItem = {
@@ -321,9 +308,7 @@ if (addToCartBtn) {
   });
 }
 
-/// ===============================
-/// INIT
-/// ===============================
+// Fetch products data catalog items and kick off builder view
 async function init() {
   try {
     const response = await fetch("/api/products");

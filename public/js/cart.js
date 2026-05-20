@@ -6,14 +6,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const addressDisplay = document.getElementById("address-display");
   const editBtn = document.getElementById("edit-address-btn");
 
+  // Get logged-in user email
   const userEmail = localStorage.getItem("loggedInUser");
   if (!userEmail) return;
 
   const CART_KEY = `kf_cart_${userEmail}`;
   const ADDRESS_KEY = `kf_shipping_address_${userEmail}`;
 
+  // Load cart items from local storage
   let cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
 
+  // Display empty cart message or render items
   if (cart.length === 0) {
     if (emptyMsg) emptyMsg.style.display = "block";
     grandTotalEl.innerText = "£0.00";
@@ -25,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .map((build, index) => {
         grandTotal += build.totalPrice;
 
+        // Render selected mods
         const modsHtml =
           build.mods && build.mods.length > 0
             ? build.mods
@@ -35,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 .join("")
             : `<div class="part-line" style="display: flex; justify-content: space-between; padding: 0.2rem 0; opacity: 0.5;"><span>Mods:</span><span>None</span></div>`;
 
+        // Return HTML block for each keyboard build
         return `
             <div class="cart-build-item" style="background: rgba(128, 128, 128, 0.05); border: 1px solid rgba(128, 128, 128, 0.1); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
                 <div class="build-header" style="display: flex; justify-content: space-between; font-weight: 900; border-bottom: 1px solid rgba(128, 128, 128, 0.1); padding-bottom: 0.5rem; margin-bottom: 1rem;">
@@ -53,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     grandTotalEl.innerText = `£${grandTotal.toFixed(2)}`;
   }
 
+  // Load and populate saved shipping address
   const loadAddress = () => {
     const saved = JSON.parse(localStorage.getItem(ADDRESS_KEY));
     if (saved) {
@@ -66,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   loadAddress();
 
+  // Toggle visibility of address editing form
   editBtn.addEventListener("click", () => {
     const isEditing = addressForm.style.display === "grid";
     addressForm.style.display = isEditing ? "none" : "grid";
@@ -73,6 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
     editBtn.innerText = isEditing ? "Edit" : "Cancel";
   });
 
+  // Save updated address data
   addressForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const addressData = {
@@ -87,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
     editBtn.innerText = "Edit";
   });
 
-  // --- CHECKOUT & PAYMENT FLOW ---
+  // Handle checkout and order placement
   document.querySelectorAll(".pay-btn").forEach((btn) => {
     btn.addEventListener("click", async (e) => {
       if (cart.length === 0) {
@@ -101,6 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const grandTotal = cart.reduce((sum, item) => sum + item.totalPrice, 0);
 
       try {
+        // Send order to backend api
         const response = await fetch("/api/checkout", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -113,6 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         if (!response.ok) throw new Error();
       } catch (err) {
+        // Fallback to offline local storage if api fails
         let allOrders = JSON.parse(localStorage.getItem("kf_orders") || "[]");
         const nextDisplayId =
           allOrders.length > 0
@@ -135,6 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
         allOrders.push(newOrder);
         localStorage.setItem("kf_orders", JSON.stringify(allOrders));
       } finally {
+        // Clear cart and redirect to account page
         localStorage.removeItem(CART_KEY);
         window.location.href = checkoutUrl;
       }
@@ -142,12 +153,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// Generate unique ID for fallback order tracking
 function generateSafeId() {
   return window.crypto && crypto.randomUUID
     ? crypto.randomUUID()
     : "kf_" + Date.now().toString(36) + Math.random().toString(36).substring(2);
 }
 
+// Remove item from cart and reload page
 function removeFromCart(id) {
   const userEmail = localStorage.getItem("loggedInUser");
   if (!userEmail) return;
