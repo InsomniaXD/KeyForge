@@ -8,16 +8,22 @@ FROM users u LEFT JOIN orders o ON u.email = o.userEmail
 GROUP BY u.email ORDER BY total_spent DESC;
 
 -- 3. Builds per order
-SELECT o.id AS Order_ID,
-       (seq.seq + 1) AS Build_Number,
-       JSON_VALUE(o.items, CONCAT('$[', seq.seq, '].case.name'))    AS Kit,
-       JSON_VALUE(o.items, CONCAT('$[', seq.seq, '].switch.name'))  AS Switch,
-       JSON_VALUE(o.items, CONCAT('$[', seq.seq, '].keycaps.name')) AS Keycaps,
-       JSON_VALUE(o.items, CONCAT('$[', seq.seq, '].totalPrice'))   AS 'Price (£)'
+SELECT
+    o.id                                                          AS Order_ID,
+    (seq.seq + 1)                                                 AS Build_Number,
+    JSON_VALUE(o.shipping, '$.address')                           AS Street,
+    JSON_VALUE(o.shipping, '$.city')                              AS City,
+    JSON_VALUE(o.shipping, '$.postal')                            AS Postal_Code,
+    JSON_VALUE(o.items, CONCAT('$[', seq.seq, '].case.name'))     AS Kit,
+    JSON_VALUE(o.items, CONCAT('$[', seq.seq, '].switch.name'))   AS Switch,
+    JSON_VALUE(o.items, CONCAT('$[', seq.seq, '].keycaps.name'))  AS Keycaps,
+    JSON_VALUE(o.items, CONCAT('$[', seq.seq, '].totalPrice'))    AS 'Price (£)'
 FROM orders o
-JOIN (SELECT 0 AS seq UNION ALL SELECT 1 UNION ALL SELECT 2
-      UNION ALL SELECT 3 UNION ALL SELECT 4) seq
-  ON JSON_VALUE(o.items, CONCAT('$[', seq.seq, '].case.name')) IS NOT NULL
+JOIN (
+    SELECT 0 AS seq UNION ALL SELECT 1 UNION ALL SELECT 2
+    UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5
+    UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
+) seq ON JSON_VALUE(o.items, CONCAT('$[', seq.seq, '].case.name')) IS NOT NULL
 ORDER BY o.id, Build_Number;
 
 -- 4. Most popular kits across all orders
@@ -50,6 +56,14 @@ FROM orders GROUP BY orderDate ORDER BY orderDate DESC;
 SELECT category, name, price FROM products ORDER BY category, price;
 
 -- 9. Full order detail (single order — replace 1 with any order ID)
-SELECT o.id, o.userEmail, o.totalPrice, o.paymentMethod,
-       o.orderDate, o.shipping
-FROM orders o WHERE o.id = 1;
+SELECT
+    o.id                                AS Order_ID,
+    o.userEmail                         AS Customer,
+    JSON_VALUE(o.shipping, '$.address') AS Street,
+    JSON_VALUE(o.shipping, '$.city')    AS City,
+    JSON_VALUE(o.shipping, '$.postal')  AS Postal_Code,
+    o.totalPrice                        AS 'Total (£)',
+    o.paymentMethod                     AS Payment,
+    o.orderDate                         AS Date
+FROM orders o
+WHERE o.id = 1;   -- replace with any Order_ID
