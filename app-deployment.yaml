@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: keyforge-app-deployment
 spec:
+  replicas: 3
   selector:
     matchLabels:
       app: keyforge-app
